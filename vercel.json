@@ -1,0 +1,47 @@
+{
+
+  "framework": null,
+
+  "builds": [
+
+    {
+
+      "src": "ClinicSystem/wsgi.py",
+
+      "use": "@vercel/python",
+
+      "config": { "maxLambdaSize":  "15mb", "runtime":  "python3.14" }
+
+    }
+
+  ],
+
+  "routes": [
+
+    {
+
+      "src": "/(.*)",
+
+      "dest": "ClinicSystem/wsgi.py",
+
+      "headers": {
+
+        "Access-Control-Allow-Origin": "*",
+
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS, DELETE, PUT"
+
+      }
+
+    },
+
+    {
+
+      "src": "/(.*)",
+
+      "dest": "ClinicSystem/wsgi.py"
+
+    }
+
+  ]
+
+}
