@@ -53,7 +53,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'AppointmentManagementSystem.urls'
+ROOT_URLCONF = 'ClinicSystem.urls'
 
 TEMPLATES = [
     {
