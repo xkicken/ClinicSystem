@@ -80,3 +80,19 @@ class Appointment(models.Model):
 
     def __str__(self):
         return f"{self.patient} {self.doctor} - {self.timeSlot}"
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    phone = models.CharField(max_length=15)
+    address = models.CharField(max_length=255)
+
+    profile_picture = models.ImageField(
+        upload_to='profile_pictures/',
+        blank=True,
+        null=True,
+        default='default_profile.png'
+    )
+
+    def __str__(self):
+        return self.user.username
