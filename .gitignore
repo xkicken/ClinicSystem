@@ -1,4 +1,7 @@
 /.env
 /.venv
-/.idea
+/.idea/
 /node_modules/
+/appointment/__pycache__
+/ClinicSystem/__pycache__
+*.pyc
