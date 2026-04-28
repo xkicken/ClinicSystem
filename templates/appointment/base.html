@@ -1,0 +1,58 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Clinic System{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Navbar</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav">
+
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Home</a>
+        </li>
+        {% if user.is_authenticated %}
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="{% url 'profile' %}">Profile</a>
+            </li>
+
+          {% if user.group.all.0.name == "Doctor" %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'doctor' %}">Doctor Dashboard</a>
+            </li>
+          {% else %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'patient_dashboard' %}">Dashboard</a>
+            </li>
+          {% endif %}
+            <span class="navbar-text">Welcome {{ user.get_full_name }}</span>
+        {% else %}
+        <button onclick="toggleTheme()" class="btn btn-outline-dark">Toggle Mode</button>
+        <div class="d-flex ms-auto">
+            <button class="btn btn-outline-success" type="submit">Login</button>
+        </div>
+
+        {% endif %}
+
+          </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+    {% block content %}
+    {% endblock %}
+
+    <script src="{% static 'appointment/js/base.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+</body>
+</html>
