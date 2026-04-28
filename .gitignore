@@ -5,3 +5,4 @@
 /appointment/__pycache__
 /ClinicSystem/__pycache__
 *.pyc
+test.py
