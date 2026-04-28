@@ -1,0 +1,41 @@
+[
+  { "model": "auth.user", "pk": 1, "fields": { "username": "doctor1", "groups": [1], "first_name": "John", "last_name": "Doe", "email": "doc1@example.com", "password": "pbkdf2_sha256$600000$abc$abc" }},
+  { "model": "auth.user", "pk": 2, "fields": { "username": "doctor2", "groups": [1], "first_name": "Alice", "last_name": "Smith", "email": "doc2@example.com", "password": "pbkdf2_sha256$600000$abc$abc" }},
+  { "model": "auth.user", "pk": 3, "fields": { "username": "user1", "groups": [2], "first_name": "Bob", "last_name": "Brown", "email": "user1@example.com", "password": "pbkdf2_sha256$600000$abc$abc" }},
+  { "model": "auth.user", "pk": 4, "fields": { "username": "user2", "groups": [2], "first_name": "Emma", "last_name": "Wilson", "email": "user2@example.com", "password": "pbkdf2_sha256$600000$abc$abc" }},
+  { "model": "auth.user", "pk": 5, "fields": { "username": "user3", "groups": [2], "first_name": "Liam", "last_name": "Taylor", "email": "user3@example.com", "password": "pbkdf2_sha256$600000$abc$abc" }},
+
+  { "model": "appointment.specialty", "pk": 1, "fields": { "name": "Cardiology" }},
+  { "model": "appointment.specialty", "pk": 2, "fields": { "name": "Dermatology" }},
+  { "model": "appointment.specialty", "pk": 3, "fields": { "name": "Pediatrics" }},
+
+  { "model": "appointment.userprofile", "pk": 1, "fields": { "user": 1, "phone": "021000001", "address": "1 Queen Street", "profile_picture": "default_profile.png" }},
+  { "model": "appointment.userprofile", "pk": 2, "fields": { "user": 2, "phone": "021000002", "address": "2 Queen Street", "profile_picture": "default_profile.png" }},
+  { "model": "appointment.userprofile", "pk": 3, "fields": { "user": 3, "phone": "021000003", "address": "3 Queen Street", "profile_picture": "default_profile.png" }},
+  { "model": "appointment.userprofile", "pk": 4, "fields": { "user": 4, "phone": "021000004", "address": "4 Queen Street", "profile_picture": "default_profile.png" }},
+  { "model": "appointment.userprofile", "pk": 5, "fields": { "user": 5, "phone": "021000005", "address": "5 Queen Street", "profile_picture": "default_profile.png" }},
+
+  { "model": "appointment.doctor", "pk": 1, "fields": { "account": 1, "specialty": 1, "phone": "027111111" }},
+  { "model": "appointment.doctor", "pk": 2, "fields": { "account": 2, "specialty": 2, "phone": "027222222" }},
+
+  { "model": "appointment.patient", "pk": 1, "fields": { "account": 3, "first_name": "Tom", "last_name": "Brown", "phone": "022100001", "address": "10 King Street", "date_of_birth": "1995-05-10", "gender": "MALE", "emergency_contact": "Jane Brown", "emergency_contact_phone": "021999999" }},
+  { "model": "appointment.patient", "pk": 2, "fields": { "account": 3, "first_name": "Lucy", "last_name": "Brown", "phone": "022100002", "address": "10 King Street", "date_of_birth": "2000-03-15", "gender": "FEMALE", "emergency_contact": "Jane Brown", "emergency_contact_phone": "021999999" }},
+  { "model": "appointment.patient", "pk": 3, "fields": { "account": 4, "first_name": "Noah", "last_name": "Wilson", "phone": "022200001", "address": "20 Queen Street", "date_of_birth": "1988-07-20", "gender": "MALE", "emergency_contact": "Anna Wilson", "emergency_contact_phone": "021888888" }},
+  { "model": "appointment.patient", "pk": 4, "fields": { "account": 4, "first_name": "Olivia", "last_name": "Wilson", "phone": "022200002", "address": "20 Queen Street", "date_of_birth": "1992-11-11", "gender": "FEMALE", "emergency_contact": "Anna Wilson", "emergency_contact_phone": "021888888" }},
+  { "model": "appointment.patient", "pk": 5, "fields": { "account": 5, "first_name": "Ethan", "last_name": "Taylor", "phone": "022300001", "address": "30 Albert Street", "date_of_birth": "1985-01-05", "gender": "MALE", "emergency_contact": "Mia Taylor", "emergency_contact_phone": "021777777" }},
+  { "model": "appointment.patient", "pk": 6, "fields": { "account": 5, "first_name": "Sophia", "last_name": "Taylor", "phone": "022300002", "address": "30 Albert Street", "date_of_birth": "1998-09-25", "gender": "FEMALE", "emergency_contact": "Mia Taylor", "emergency_contact_phone": "021777777" }},
+
+  { "model": "appointment.timeslot", "pk": 1, "fields": { "doctor": 1, "date": "2026-05-01", "start_time": "09:00:00", "end_time": "09:30:00" }},
+  { "model": "appointment.timeslot", "pk": 2, "fields": { "doctor": 1, "date": "2026-05-01", "start_time": "10:00:00", "end_time": "10:30:00" }},
+  { "model": "appointment.timeslot", "pk": 3, "fields": { "doctor": 1, "date": "2026-05-02", "start_time": "09:00:00", "end_time": "09:30:00" }},
+  { "model": "appointment.timeslot", "pk": 4, "fields": { "doctor": 2, "date": "2026-05-01", "start_time": "09:00:00", "end_time": "09:30:00" }},
+  { "model": "appointment.timeslot", "pk": 5, "fields": { "doctor": 2, "date": "2026-05-01", "start_time": "10:00:00", "end_time": "10:30:00" }},
+  { "model": "appointment.timeslot", "pk": 6, "fields": { "doctor": 2, "date": "2026-05-02", "start_time": "11:00:00", "end_time": "11:30:00" }},
+
+  { "model": "appointment.appointment", "pk": 1, "fields": { "patient": 1, "time_slot": 1, "appointment_status": "BOOKED", "created_at": "2026-04-28T10:00:00Z", "updated_at": "2026-04-28T10:00:00Z" }},
+  { "model": "appointment.appointment", "pk": 2, "fields": { "patient": 2, "time_slot": 2, "appointment_status": "DONE", "created_at": "2026-04-28T10:10:00Z", "updated_at": "2026-04-28T10:10:00Z" }},
+  { "model": "appointment.appointment", "pk": 3, "fields": { "patient": 3, "time_slot": 3, "appointment_status": "BOOKED", "created_at": "2026-04-28T10:20:00Z", "updated_at": "2026-04-28T10:20:00Z" }},
+  { "model": "appointment.appointment", "pk": 4, "fields": { "patient": 4, "time_slot": 4, "appointment_status": "CANCELLED", "created_at": "2026-04-28T10:30:00Z", "updated_at": "2026-04-28T10:30:00Z" }},
+  { "model": "appointment.appointment", "pk": 5, "fields": { "patient": 5, "time_slot": 5, "appointment_status": "DONE", "created_at": "2026-04-28T10:40:00Z", "updated_at": "2026-04-28T10:40:00Z" }},
+  { "model": "appointment.appointment", "pk": 6, "fields": { "patient": 6, "time_slot": 6, "appointment_status": "BOOKED", "created_at": "2026-04-28T10:50:00Z", "updated_at": "2026-04-28T10:50:00Z" }}
+]
