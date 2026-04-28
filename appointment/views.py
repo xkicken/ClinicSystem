@@ -12,3 +12,5 @@ def doctor_dashboard(request):
     return render(request, 'appointment/doctor_dashboard.html')
 def patient_dashboard(request):
     return render(request, 'appointment/patient_dashboard.html')
+def calendar(request):
+    return render(request, 'appointment/calendar.html')

@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from appointment.views import home,profile,doctor_dashboard,patient_dashboard
+from appointment.views import home,profile,doctor_dashboard,patient_dashboard,calendar
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -24,6 +24,7 @@ urlpatterns = [
     path('profile/', profile, name='profile'),
     path('doctor_dashboard/', doctor_dashboard, name='doctor_dashboard'),
     path('patient_dashboard/', patient_dashboard, name='patient_dashboard'),
-
     path("hijack/", include("hijack.urls")),
+    path('accounts/', include('django.contrib.auth.urls')),
+    path('calendar/', calendar, name='calendar')
 ]
