@@ -1,8 +1,10 @@
 asgiref==3.11.1
 Django==6.0.4
 django-hijack==3.7.8
-psycopg[binary]
+pillow==12.2.0
+psycopg==3.3.3
+psycopg-binary==3.3.3
 python-dotenv==1.2.2
 sqlparse==0.5.5
 typing_extensions==4.15.0
-tzdata==2026.1
+tzdata==2026.2
