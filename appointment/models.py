@@ -7,9 +7,10 @@ class Specialty(models.Model):
     def __str__(self):
         return self.name
 
+# one user account may have multiple patients
 
 class Patient(models.Model):
-    account = models.ForeignKey(User, on_delete=models.CASCADE)
+    account = models.ForeignKey(User, on_delete=models.CASCADE, related_name='patients')
 
     first_name = models.CharField(max_length=150)
     last_name = models.CharField(max_length=150)
@@ -28,12 +29,13 @@ class Patient(models.Model):
     emergency_contact = models.CharField(max_length=255)
     emergency_contact_phone = models.CharField(max_length=15)
 
-    constraints = [
-        models.UniqueConstraint(
-            fields=['account', 'first_name', 'last_name', 'date_of_birth'],
-            name='unique_patient_per_account'
-        )
-    ]
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['account', 'first_name', 'last_name', 'date_of_birth'],
+                name='unique_patient_per_account'
+            )
+        ]
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
