@@ -1,0 +1,18 @@
+{% extends 'appointment/base.html' %}
+{% load static %}
+
+{% block title %}Calendar{% endblock %}
+
+{% block head_extra %}
+    <link rel="stylesheet" href="{% static 'appointment/css/calendar.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div id='calendar'></div>
+    {{ data|json_script:"patient_appointments" }}
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'appointment/js/full_calendar.min.js' %}"></script>
+    <script src="{% static 'appointment/js/calendar.js' %}"></script>
+{% endblock %}
