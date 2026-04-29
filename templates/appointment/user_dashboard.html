@@ -1,0 +1,80 @@
+{% extends 'appointment/base.html' %}
+{% load static %}
+
+{% block title %}Patient Dashboard{% endblock %}
+<link rel="stylesheet" href="{% static 'appointment/css/user_dashboard.css' %}">
+{% block head_extra %}
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="container pt-4">
+        <h2 class="fw-bold text-center">Patient Dashboard</h2>
+        <p class="text-muted text-center">Manage your patients and appointments</p>
+    </div>
+
+
+    <!-- Patient List -->
+    <div class="container pb-5 d-flex justify-content-center">
+
+        <div class="card shadow-sm border-0 w-100" style="max-width: 1000px;">
+            <div class="card-body">
+
+                {% for item in patient_data %}
+                    <div class="d-flex justify-content-between align-items-center p-3 mb-3 rounded-3 border bg-body">
+
+                        <!-- Left: Patient info -->
+                        <div>
+
+                            <div class="fw-semibold fs-5">
+                                👤 {{ item.patient.first_name }} {{ item.patient.last_name }}
+                            </div>
+
+                            {% if item.appointment %}
+                                <div class="text-muted small">
+                                    Next Appointment:
+                                    {{ item.appointment.time_slot.date }}
+                                    {{ item.appointment.time_slot.start_time }}
+                                    →
+                                    Dr. {{ item.appointment.time_slot.doctor }}
+                                </div>
+                            {% else %}
+                                <div class="text-muted small">
+                                    No appointments scheduled.
+                                </div>
+                            {% endif %}
+
+                        </div>
+
+                        <!-- Right: Buttons -->
+                        <div class="d-flex gap-2">
+
+                            <a href="#" class="btn btn-outline-primary btn-sm rounded-pill">
+                                Book
+                            </a>
+
+                            <a href="#}"
+                               class="btn btn-primary btn-sm rounded-pill">
+                                View
+                            </a>
+
+                        </div>
+
+                    </div>
+                {% empty %}
+                    <div class="text-center text-muted py-4">
+                        No patients found
+                    </div>
+                {% endfor %}
+
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'appointment/js/user_dashboard.js' %}"></script>
+{% endblock %}

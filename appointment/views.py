@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from .models import *
+from django.utils import timezone
 
 def home(request):
     doctors = Doctor.objects.select_related('specialty', 'account').all()
@@ -11,8 +12,32 @@ def profile(request):
 # Create your views here.
 def doctor_dashboard(request):
     return render(request, 'appointment/doctor_dashboard.html')
-def patient_dashboard(request):
-    return render(request, 'appointment/patient_dashboard.html')
+
+@login_required()
+def user_dashboard(request):
+    user = request.user
+    patients = Patient.objects.filter(account_id=user.id)
+
+    patient_data = []
+
+    for p in patients:
+        appointments = (
+            Appointment.objects.select_related('time_slot', 'time_slot__doctor')
+        .filter(patient_id=p.id, time_slot__date__gte=timezone.localtime().date())
+        .order_by('time_slot__date','time_slot__start_time')
+        .first()
+        )
+
+        patient_data.append({
+            'patient': p,
+            'appointment': appointments
+        })
+
+    print(patient_data)
+
+    return render(request, "appointment/user_dashboard.html", {
+        "patient_data": patient_data
+    })
 
 @login_required
 def calendar(request):
