@@ -14,7 +14,7 @@ def doctor_dashboard(request):
     return render(request, 'appointment/doctor_dashboard.html')
 
 @login_required()
-def patient_dashboard(request):
+def user_dashboard(request):
     user = request.user
     patients = Patient.objects.filter(account_id=user.id)
 
@@ -35,7 +35,7 @@ def patient_dashboard(request):
 
     print(patient_data)
 
-    return render(request, "appointment/patient_dashboard.html", {
+    return render(request, "appointment/user_dashboard.html", {
         "patient_data": patient_data
     })
 
