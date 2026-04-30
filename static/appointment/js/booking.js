@@ -1,6 +1,17 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const selected_doctor = JSON.parse(document.getElementById('selected_doctor').textContent);
-    const timeslots = JSON.parse(document.getElementById('time_slots_available').textContent);
+    const doctorEl = document.getElementById('selected_doctor');
+    const slotsEl = document.getElementById('time_slots_available');
+
+    let selected_doctor = null;
+    let timeslots = [];
+
+    if (doctorEl) {
+        selected_doctor = JSON.parse(doctorEl.textContent);
+    }
+
+    if (slotsEl) {
+        timeslots = JSON.parse(slotsEl.textContent || '[]');
+    }
 
     const calendarEl = document.getElementById('calendar');
     const calendar = new FullCalendar.Calendar(calendarEl, {
@@ -9,9 +20,9 @@ document.addEventListener('DOMContentLoaded', function () {
         slotMaxTime: '17:00:00',
         allDaySlot: false,
         eventDisplay: 'block',
-        eventOverlap: false,
+        eventOverlap: true,
         slotDuration: '00:10:00',
-        height: 'auto',
+        height: "calc(100vh - 400px)",
 
         headerToolbar: {
             left: 'prev,next today',
@@ -36,8 +47,7 @@ document.addEventListener('DOMContentLoaded', function () {
             let modal = new bootstrap.Modal(document.getElementById('eventModal'));
             modal.show();
         },
-
-        events: timeslots
+        events: timeslots,
     });
     calendar.render();
 });
