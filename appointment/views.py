@@ -1,8 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from .models import *
 from django.utils import timezone
 from datetime import timedelta, datetime
+from .forms import *
+from django.core.exceptions import PermissionDenied
 
 def home(request):
     doctors = Doctor.objects.select_related('specialty', 'account').all()
@@ -18,9 +20,7 @@ def doctor_dashboard(request):
 def user_dashboard(request):
     user = request.user
     patients = Patient.objects.filter(account_id=user.id)
-
     patient_data = []
-
     for p in patients:
         appointments = (
             Appointment.objects.select_related('time_slot', 'time_slot__doctor')
@@ -33,9 +33,6 @@ def user_dashboard(request):
             'patient': p,
             'appointment': appointments
         })
-
-    print(patient_data)
-
     return render(request, "appointment/user_dashboard.html", {
         "patient_data": patient_data
     })
@@ -43,7 +40,6 @@ def user_dashboard(request):
 @login_required
 def calendar(request):
     user = request.user
-
     group = user.groups.first().name if user.groups.exists() else None
     if group == "Doctor":
         appointments = Appointment.objects.select_related(
@@ -79,77 +75,100 @@ def calendar(request):
                     'start': f"{apt.time_slot.date}T{apt.time_slot.start_time}",
                     'end': f"{apt.time_slot.date}T{apt.time_slot.end_time}",
                 })
-        print(events)
         return render(request, "appointment/calendar.html", {
             "data": events
         })
 
     return render(request, "appointment/calendar.html")
 
+@login_required
 def booking(request):
+    userID = request.user.id
     patient_id = request.GET.get('patient')
-
+    patient = Patient.objects.get(id=patient_id)
     doctor_id = request.GET.get('doctor')
-
-    start_date = request.GET.get('start_date')
-
     time_slots = TimeSlot.objects.filter(doctor_id=doctor_id, booked=False)
+    if userID == patient.account.id:
+        if doctor_id:
+            selected_doctor = Doctor.objects.get(id=doctor_id)
+            selected_doctor_json = {
+                'id': selected_doctor.id,
+                'first_name': selected_doctor.account.first_name,
+                'last_name': selected_doctor.account.last_name,
+                'specialty': selected_doctor.specialty.name if selected_doctor.specialty else None
+            }
+            selected_patient = Patient.objects.get(id=patient_id)
+            selected_patient_json = {
+                'id': selected_patient.id,
+                'first_name': selected_patient.first_name,
+                'last_name': selected_patient.last_name
+            }
 
-    local_date = timezone.now().date()
-
-
-    if doctor_id:
-
-        selected_doctor = Doctor.objects.get(id=doctor_id)
-        selected_doctor_json = {
-            'id': selected_doctor.id,
-            'first_name': selected_doctor.account.first_name,
-            'last_name': selected_doctor.account.last_name,
-            'specialty': selected_doctor.specialty.name if selected_doctor.specialty else None
-        }
-        selected_patient = Patient.objects.get(id=patient_id)
-        selected_patient_json = {
-            'id': selected_patient.id,
-            'first_name': selected_patient.first_name,
-            'last_name': selected_patient.last_name
-        }
-
-        print("doctor id exist")
-        time_slots_available = []
-        for slot in time_slots:
-            time_slots_available.append({
-                'start': f"{slot.date}T{slot.start_time}",
-                'end': f"{slot.date}T{slot.end_time}",
-                'extendedProps':{
-                    'time_slot_id': slot.id
-                }
+            time_slots_available = []
+            for slot in time_slots:
+                time_slots_available.append({
+                    'start': f"{slot.date}T{slot.start_time}",
+                    'end': f"{slot.date}T{slot.end_time}",
+                    'extendedProps':{
+                        'time_slot_id': slot.id
+                    }
+                })
+            return render(request, "appointment/booking.html", {
+                "doctors": Doctor.objects.all(),
+                "selected_doctor": Doctor.objects.get(id=doctor_id),
+                "selected_doctor_json": selected_doctor_json,
+                "data": time_slots_available,
+                "selected_patient": Patient.objects.get(id=patient_id),
+                "selected_patient_json": selected_patient_json
             })
-        return render(request, "appointment/booking.html", {
+
+        return  render(request, "appointment/booking.html",{
             "doctors": Doctor.objects.all(),
-            "selected_doctor": Doctor.objects.get(id=doctor_id),
-            "selected_doctor_json": selected_doctor_json,
-            "data": time_slots_available,
             "selected_patient": Patient.objects.get(id=patient_id),
-            "selected_patient_json": selected_patient_json
         })
+    else:
+        raise PermissionDenied
 
-    return  render(request, "appointment/booking.html",{
-        "doctors": Doctor.objects.all(),
-        "selected_patient": Patient.objects.get(id=patient_id),
-    })
-
+@login_required
 def booking_confirm(request):
+    userID = request.user.id
     doctor_id = request.GET.get('doctor')
     time_slot_id = request.GET.get('time_slot')
     patient_id = request.GET.get('patient')
-    appointment = Appointment.objects.select_related(
-        'time_slot','patient','time_slot__doctor'
-    )
+    patient = Patient.objects.get(id=patient_id)
+    if userID == patient.account.id:
+        appointment = Appointment.objects.select_related(
+            'time_slot','patient','time_slot__doctor'
+        )
 
-    appointment, created = Appointment.objects.get_or_create(
-        time_slot_id=time_slot_id, patient_id=patient_id, time_slot__doctor_id=doctor_id
-    )
-    return render(request, "appointment/booking_confirm.html",{
-        "appointment":appointment
-    })
+        appointment, created = Appointment.objects.get_or_create(
+            time_slot_id=time_slot_id, patient_id=patient_id, time_slot__doctor_id=doctor_id
+        )
+        return render(request, "appointment/booking_confirm.html",{
+            "appointment":appointment
+        })
+    else:
+        raise PermissionDenied
 
+@login_required
+def patient_view(request, id):
+    patient = get_object_or_404(Patient, id=id)
+    userID = request.user.id
+    if userID == patient.account_id:
+        edit_mode = request.GET.get('edit') == 'true'
+
+        form = PatientForm(request.POST or None, instance=patient)
+
+        if request.method == 'POST':
+            if form.is_valid():
+                form.save()
+                return redirect('patient_view', patient.id)
+
+        return render(request, "appointment/patient_view.html", {
+            "patient": patient,
+            "edit_mode": edit_mode,
+            "form": form
+        })
+
+    else:
+        raise PermissionDenied
