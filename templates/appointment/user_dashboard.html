@@ -50,11 +50,11 @@
                         <!-- Right: Buttons -->
                         <div class="d-flex gap-2">
 
-                            <a href="#" class="btn btn-outline-primary btn-sm rounded-pill">
+                            <a href="{% url 'booking' %}?patient={{ item.patient.id }}" class="btn btn-outline-primary btn-sm rounded-pill">
                                 Book
                             </a>
 
-                            <a href="#}"
+                            <a href="#"
                                class="btn btn-primary btn-sm rounded-pill">
                                 View
                             </a>
