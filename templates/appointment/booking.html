@@ -11,36 +11,128 @@
     <div class="d-flex">
 
         <!-- Sidebar -->
-        <div class="bg-dark text-white p-3" style="width: 250px; height: 100vh; min-width: 250px">
-            <h4 class="text-center">Doctor</h4>
+        <div class="bg-dark text-white p-3"
+             style="width: 300px; min-width: 300px; height: calc(100vh - 56px); overflow-y: auto;">
 
-            <ul class="nav flex-column mt-4">
-                {% for doctor in doctors %}
-                    <li class="nav-item">
-                        <a class="nav-link text-white"
-                           href="{% url 'booking' %}?doctor={{ doctor.id }}">Dr. {{ doctor.account.first_name }} {{ doctor.account.last_name }}</a>
-                    </li>
-                {% endfor %}
+            <h4 class="text-center mb-4">Doctors</h4>
 
-            </ul>
+            {% for doctor in doctors %}
+
+                <a href="{% url 'booking' %}?doctor={{ doctor.id }}&patient={{ selected_patient.id }}"
+                   class="text-decoration-none">
+
+                    <div class="card mb-3 border-0 shadow-sm
+                    {% if selected_doctor and selected_doctor.id == doctor.id %}
+                        bg-primary text-white
+                    {% else %}
+                        bg-secondary text-white
+                    {% endif %}">
+
+                        <div class="card-body py-2">
+
+                            <h6 class="mb-1 fw-bold text-white">
+                                Dr. {{ doctor.account.first_name }} {{ doctor.account.last_name }}
+                            </h6>
+
+                            <small class="text-white-50">
+                                {{ doctor.specialty }}
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                </a>
+
+            {% endfor %}
+
         </div>
 
-        <!-- Content -->
-        <div class="p-4 flex-grow-1">
-            {% if selected_doctor %}
-                <h2>Booking For
-                    Dr. {{ selected_doctor.account.first_name }} {{ selected_doctor.account.last_name }}
-                </h2>
-                {{ data|json_script:"time_slots_available" }}
-            {% else %}
-                <h2>Booking</h2>
-            {% endif %}
 
-            <div id='calendar'></div>
+        <div class="p-4 flex-grow-1 d-flex justify-content-center" style="height: calc(100vh - 56px);">
+
+            <div style="width: 100%; max-width: 1100px;">
+
+                {% if selected_patient %}
+
+                    {% if selected_doctor %}
+
+                        <!-- Main Card (theme-safe) -->
+                        <div class="card shadow-sm border">
+
+                            <div class="card-body">
+
+                                <h4 class="mb-3 text-body">
+                                    Booking For
+                                    <strong>
+                                        {{ selected_patient.first_name }} {{ selected_patient.last_name }}
+                                    </strong>
+                                </h4>
+
+                                <!-- Doctor Card -->
+                                <div class="card mb-3">
+
+                                    <div class="card-body">
+
+                                        <div class="text-muted small mb-1">
+                                            Selected Doctor
+                                        </div>
+
+                                        <h3 class="fw-bold mb-1 text-body">
+                                            Dr. {{ selected_doctor.account.first_name }}
+                                            {{ selected_doctor.account.last_name }}
+                                        </h3>
+
+                                        {% if selected_doctor.specialty %}
+                                            <span class="badge bg-primary mt-2">
+                                        {{ selected_doctor.specialty }}
+                                    </span>
+                                        {% endif %}
+
+                                    </div>
+                                </div>
+
+                                <div class="text-muted small">
+                                    Select an available time slot from the calendar below
+                                </div>
+
+                            </div>
+                        </div>
+
+                        {{ data|json_script:"time_slots_available" }}
+
+                    {% else %}
+
+                        <div class="alert alert-warning shadow-sm">
+                            <h5 class="mb-0">
+                                Booking For {{ selected_patient.first_name }} {{ selected_patient.last_name }}
+                            </h5>
+                            <p class="mb-0 mt-2">
+                                Please select a doctor to continue.
+                            </p>
+                        </div>
+
+                    {% endif %}
+
+                {% else %}
+
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h4 class="mb-0 text-body">Booking</h4>
+                        </div>
+                    </div>
+
+                {% endif %}
+
+                <!-- Calendar -->
+                <div id="calendar" class="mt-3"></div>
+
+            </div>
+
         </div>
     </div>
     {{ selected_doctor_json|json_script:"selected_doctor" }}
-    
+
 
     <div class="modal fade" id="eventModal">
         <div class="modal-dialog modal-dialog-centered">
@@ -53,7 +145,6 @@
                 <button id="bookBtn" class="btn btn-primary">
                     Book
                 </button>
-
             </div>
         </div>
     </div>
