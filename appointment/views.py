@@ -96,6 +96,13 @@ def booking(request):
 
     local_date = timezone.now().date()
 
+    selected_doctor = Doctor.objects.get(id=doctor_id)
+    selected_doctor_json = {
+        'id': selected_doctor.id,
+        'first_name': selected_doctor.account.first_name,
+        'last_name': selected_doctor.account.last_name,
+        'specialty': selected_doctor.specialty.name if selected_doctor.specialty else None
+    }
     if doctor_id:
         print("doctor id exist")
         if start_date:
@@ -113,8 +120,9 @@ def booking(request):
                     })
                 print(time_slots_available)
                 return render(request, "appointment/booking.html", {
-                    "doctor": Doctor.objects.all(),
+                    "doctors": Doctor.objects.all(),
                     "selected_doctor": Doctor.objects.get(id=doctor_id),
+                    "selected_doctor_json": selected_doctor_json,
                     "data": time_slots_available
                 })
             except ValueError:
@@ -134,10 +142,13 @@ def booking(request):
                 })
             # print(time_slots_available)
             return render(request, "appointment/booking.html", {
-                "doctor": Doctor.objects.all(),
+                "doctors": Doctor.objects.all(),
                 "selected_doctor": Doctor.objects.get(id=doctor_id),
+                "selected_doctor_json": selected_doctor_json,
                 "data": time_slots_available
             })
 
-    return  render(request, "appointment/booking.html")
+    return  render(request, "appointment/booking.html",{
+        "doctors": Doctor.objects.all(),
+    })
 
