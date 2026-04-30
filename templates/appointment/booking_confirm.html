@@ -1,0 +1,59 @@
+{% extends 'appointment/base.html' %}
+{% block content %}
+<div class="container py-5 d-flex justify-content-center">
+
+    <div class="card shadow-sm border-0 w-100" style="max-width: 600px;">
+        <div class="card-body text-center">
+
+            <h3 class="mb-3 text-success">Booking Confirmed</h3>
+            <p class="text-muted mb-4">Your appointment has been successfully booked.</p>
+
+            <hr>
+
+            <!-- Booking Details -->
+            <div class="text-start">
+
+                <p><strong>Booking ID:</strong> {{ appointment.id }}</p>
+
+                <p><strong>Patient:</strong>
+                    {{ appointment.patient.first_name }} {{ appointment.patient.last_name }}
+                </p>
+
+                <p><strong>Doctor:</strong>
+                    Dr. {{ appointment.time_slot.doctor.account.first_name }} {{ appointment.time_slot.doctor.account.last_name }}
+                </p>
+
+                <p><strong>Specialty:</strong>
+                    {{ appointment.time_slot.doctor.specialty }}
+                </p>
+
+                <p><strong>Date:</strong>
+                    {{ appointment.time_slot.date }}
+                </p>
+
+                <p><strong>Time:</strong>
+                    {{ appointment.time_slot.start_time }} - {{ appointment.time_slot.end_time }}
+                </p>
+
+                <p><strong>Status:</strong>
+                    <span class="badge bg-success">{{ appointment.appointment_status }}</span>
+                </p>
+
+            </div>
+
+            <hr>
+
+            <!-- Actions -->
+            <a href="{% url 'calendar' %}" class="btn btn-primary w-100 mb-2">
+                Back to Calendar
+            </a>
+
+            <a href="{% url 'user_dashboard' %}" class="btn btn-outline-secondary w-100">
+                Go to Dashboard
+            </a>
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}

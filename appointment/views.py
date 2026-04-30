@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from .models import *
 from django.utils import timezone
+from datetime import timedelta, datetime
 
 def home(request):
     doctors = Doctor.objects.select_related('specialty', 'account').all()
@@ -78,11 +79,77 @@ def calendar(request):
                     'start': f"{apt.time_slot.date}T{apt.time_slot.start_time}",
                     'end': f"{apt.time_slot.date}T{apt.time_slot.end_time}",
                 })
-
+        print(events)
         return render(request, "appointment/calendar.html", {
             "data": events
         })
 
     return render(request, "appointment/calendar.html")
 
+def booking(request):
+    patient_id = request.GET.get('patient')
+
+    doctor_id = request.GET.get('doctor')
+
+    start_date = request.GET.get('start_date')
+
+    time_slots = TimeSlot.objects.filter(doctor_id=doctor_id, booked=False)
+
+    local_date = timezone.now().date()
+
+
+    if doctor_id:
+
+        selected_doctor = Doctor.objects.get(id=doctor_id)
+        selected_doctor_json = {
+            'id': selected_doctor.id,
+            'first_name': selected_doctor.account.first_name,
+            'last_name': selected_doctor.account.last_name,
+            'specialty': selected_doctor.specialty.name if selected_doctor.specialty else None
+        }
+        selected_patient = Patient.objects.get(id=patient_id)
+        selected_patient_json = {
+            'id': selected_patient.id,
+            'first_name': selected_patient.first_name,
+            'last_name': selected_patient.last_name
+        }
+
+        print("doctor id exist")
+        time_slots_available = []
+        for slot in time_slots:
+            time_slots_available.append({
+                'start': f"{slot.date}T{slot.start_time}",
+                'end': f"{slot.date}T{slot.end_time}",
+                'extendedProps':{
+                    'time_slot_id': slot.id
+                }
+            })
+        return render(request, "appointment/booking.html", {
+            "doctors": Doctor.objects.all(),
+            "selected_doctor": Doctor.objects.get(id=doctor_id),
+            "selected_doctor_json": selected_doctor_json,
+            "data": time_slots_available,
+            "selected_patient": Patient.objects.get(id=patient_id),
+            "selected_patient_json": selected_patient_json
+        })
+
+    return  render(request, "appointment/booking.html",{
+        "doctors": Doctor.objects.all(),
+        "selected_patient": Patient.objects.get(id=patient_id),
+    })
+
+def booking_confirm(request):
+    doctor_id = request.GET.get('doctor')
+    time_slot_id = request.GET.get('time_slot')
+    patient_id = request.GET.get('patient')
+    appointment = Appointment.objects.select_related(
+        'time_slot','patient','time_slot__doctor'
+    )
+
+    appointment, created = Appointment.objects.get_or_create(
+        time_slot_id=time_slot_id, patient_id=patient_id, time_slot__doctor_id=doctor_id
+    )
+    return render(request, "appointment/booking_confirm.html",{
+        "appointment":appointment
+    })
 
