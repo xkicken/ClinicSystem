@@ -105,48 +105,19 @@ def booking(request):
     }
     if doctor_id:
         print("doctor id exist")
-        if start_date:
-            try:
-                time_slots_available = []
-                start_date_obj = datetime.strptime(start_date, '%Y-%m-%d').date()
-                print("start date exist")
-                time_slots = time_slots.filter(date__gte=start_date_obj, date__lte=start_date_obj + timedelta(days=7))
-
-                for slot in time_slots:
-                    time_slots_available.append({
-                        'id': slot.id,
-                        'start': f"{slot.date}T{slot.start_time}",
-                        'end': f"{slot.date}T{slot.end_time}",
-                    })
-                print(time_slots_available)
-                return render(request, "appointment/booking.html", {
-                    "doctors": Doctor.objects.all(),
-                    "selected_doctor": Doctor.objects.get(id=doctor_id),
-                    "selected_doctor_json": selected_doctor_json,
-                    "data": time_slots_available
-                })
-            except ValueError:
-                print("Invalid date format")
-
-        else:
-            sunday = local_date + timedelta(days=(0 - local_date.isoweekday()))
-            print(sunday)
-            time_slots_available = []
-            time_slots = time_slots.filter(date__gte=sunday, date__lt=sunday + timedelta(days=7))
-
-            for slot in time_slots:
-                time_slots_available.append({
-                    'id': slot.id,
-                    'start': f"{slot.date}T{slot.start_time}",
-                    'end': f"{slot.date}T{slot.end_time}",
-                })
-            # print(time_slots_available)
-            return render(request, "appointment/booking.html", {
-                "doctors": Doctor.objects.all(),
-                "selected_doctor": Doctor.objects.get(id=doctor_id),
-                "selected_doctor_json": selected_doctor_json,
-                "data": time_slots_available
+        time_slots_available = []
+        for slot in time_slots:
+            time_slots_available.append({
+                'id': slot.id,
+                'start': f"{slot.date}T{slot.start_time}",
+                'end': f"{slot.date}T{slot.end_time}",
             })
+        return render(request, "appointment/booking.html", {
+            "doctors": Doctor.objects.all(),
+            "selected_doctor": Doctor.objects.get(id=doctor_id),
+            "selected_doctor_json": selected_doctor_json,
+            "data": time_slots_available
+        })
 
     return  render(request, "appointment/booking.html",{
         "doctors": Doctor.objects.all(),
