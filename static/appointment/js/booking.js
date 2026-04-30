@@ -44,10 +44,10 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById("bookBtn").onclick = function () {
 
                 let doctor = selected_doctor.id;
-                console.log(doctor);
+                let timeSlotId = info.event.extendedProps.time_slot_id;
 
                 window.location.href =
-                    `/booking_confirm/?doctor=${doctor}&start=${info.event.start.toISOString()}&patient=${selected_patient.id}`;
+                    `/booking_confirm/?doctor=${doctor}&time_slot=${timeSlotId}&patient=${selected_patient.id}`;
             };
 
             let modal = new bootstrap.Modal(document.getElementById('eventModal'));

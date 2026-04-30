@@ -118,9 +118,11 @@ def booking(request):
         time_slots_available = []
         for slot in time_slots:
             time_slots_available.append({
-                'id': slot.id,
                 'start': f"{slot.date}T{slot.start_time}",
                 'end': f"{slot.date}T{slot.end_time}",
+                'extendedProps':{
+                    'time_slot_id': slot.id
+                }
             })
         return render(request, "appointment/booking.html", {
             "doctors": Doctor.objects.all(),
