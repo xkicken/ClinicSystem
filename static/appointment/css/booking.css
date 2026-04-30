@@ -1,0 +1,15 @@
+.fc-timegrid-event {
+  min-height: 28px;
+  padding: 4px;
+  font-size: 12px;
+}
+
+.fc-event {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.fc-event:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
