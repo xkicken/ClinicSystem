@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
+    const selected_doctor = JSON.parse(document.getElementById('selected_doctor').textContent);
     const timeslots = JSON.parse(document.getElementById('time_slots_available').textContent);
-    console.log(timeslots);
 
     const calendarEl = document.getElementById('calendar');
     const calendar = new FullCalendar.Calendar(calendarEl, {
@@ -11,32 +11,30 @@ document.addEventListener('DOMContentLoaded', function () {
         eventDisplay: 'block',
         eventOverlap: false,
         slotDuration: '00:10:00',
+        height: 'auto',
 
         headerToolbar: {
             left: 'prev,next today',
             center: 'title',
-            right: 'dayGridMonth,dayGridWeek,dayGridDay'
-        },
-
-        views: {
-            dayGridMonth: {buttonText: 'Month'},
-            timeGridWeek: {buttonText: 'Week'},
-            timeGridDay: {buttonText: 'Day'},
-            listWeek: {buttonText: 'List'}
         },
 
         eventClick: function (info) {
-            let confirmBook = confirm(
-                "Do you want to book this time slot?\n" +
-                "Time: " + info.event.start.toLocaleString()
-            );
 
-            if (!confirmBook) return;
+            document.getElementById("modalTitle").innerText = info.event.title;
+            document.getElementById("modalTime").innerText =
+                info.event.start.toLocaleString() + ' - ' + info.event.end.toLocaleString();
 
-            let doctor = document.getElementById('doctorSelect').value;
+            document.getElementById("bookBtn").onclick = function () {
 
-            window.location.href = `/appointment/booking?doctor=${doctor}&start_date=${info.event.start.toLocaleString()}`;
+                let doctor = selected_doctor.id;
+                console.log(doctor);
 
+                window.location.href =
+                    `/booking/?doctor=${doctor}&start=${info.event.start.toISOString()}&end=${info.event.end.toISOString()}`;
+            };
+
+            let modal = new bootstrap.Modal(document.getElementById('eventModal'));
+            modal.show();
         },
 
         events: timeslots
