@@ -18,7 +18,7 @@
                 {% for doctor in doctors %}
                     <li class="nav-item">
                         <a class="nav-link text-white"
-                           href="#">Dr. {{ doctor.account.first_name }} {{ doctor.account.last_name }}</a>
+                           href="{% url 'booking' %}?doctor={{ doctor.id }}">Dr. {{ doctor.account.first_name }} {{ doctor.account.last_name }}</a>
                     </li>
                 {% endfor %}
 
