@@ -27,4 +27,5 @@ urlpatterns = [
     path("hijack/", include("hijack.urls")),
     path('accounts/', include('django.contrib.auth.urls')),
     path('calendar/', calendar, name='calendar'),
+    path('booking/', booking, name='booking'),
 ]

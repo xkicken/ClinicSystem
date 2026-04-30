@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from .models import *
 from django.utils import timezone
+from datetime import timedelta, datetime
 
 def home(request):
     doctors = Doctor.objects.select_related('specialty', 'account').all()
@@ -78,11 +79,65 @@ def calendar(request):
                     'start': f"{apt.time_slot.date}T{apt.time_slot.start_time}",
                     'end': f"{apt.time_slot.date}T{apt.time_slot.end_time}",
                 })
-
+        print(events)
         return render(request, "appointment/calendar.html", {
             "data": events
         })
 
     return render(request, "appointment/calendar.html")
 
+def booking(request):
+
+    doctor_id = request.GET.get('doctor')
+
+    start_date = request.GET.get('start_date')
+
+    time_slots = TimeSlot.objects.filter(doctor_id=doctor_id, booked=False)
+
+    local_date = timezone.now().date()
+
+    if doctor_id:
+        print("doctor id exist")
+        if start_date:
+            try:
+                time_slots_available = []
+                start_date_obj = datetime.strptime(start_date, '%Y-%m-%d').date()
+                print("start date exist")
+                time_slots = time_slots.filter(date__gte=start_date_obj, date__lte=start_date_obj + timedelta(days=7))
+
+                for slot in time_slots:
+                    time_slots_available.append({
+                        'id': slot.id,
+                        'start': f"{slot.date}T{slot.start_time}",
+                        'end': f"{slot.date}T{slot.end_time}",
+                    })
+                print(time_slots_available)
+                return render(request, "appointment/booking.html", {
+                    "doctor": Doctor.objects.all(),
+                    "selected_doctor": Doctor.objects.get(id=doctor_id),
+                    "data": time_slots_available
+                })
+            except ValueError:
+                print("Invalid date format")
+
+        else:
+            sunday = local_date + timedelta(days=(0 - local_date.isoweekday()))
+            print(sunday)
+            time_slots_available = []
+            time_slots = time_slots.filter(date__gte=sunday, date__lt=sunday + timedelta(days=7))
+
+            for slot in time_slots:
+                time_slots_available.append({
+                    'id': slot.id,
+                    'start': f"{slot.date}T{slot.start_time}",
+                    'end': f"{slot.date}T{slot.end_time}",
+                })
+            # print(time_slots_available)
+            return render(request, "appointment/booking.html", {
+                "doctor": Doctor.objects.all(),
+                "selected_doctor": Doctor.objects.get(id=doctor_id),
+                "data": time_slots_available
+            })
+
+    return  render(request, "appointment/booking.html")
 
