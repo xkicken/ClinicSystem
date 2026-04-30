@@ -17,7 +17,6 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from appointment.views import *
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('home/', home, name='home'),
@@ -29,5 +28,5 @@ urlpatterns = [
     path('calendar/', calendar, name='calendar'),
     path('booking/', booking, name='booking'),
     path('booking_confirm/', booking_confirm, name='booking_confirm'),
-    path('patient_view/', patient_view, name='patient_view')
+    path('patient/<int:id>/', patient_view, name='patient_view'),
 ]

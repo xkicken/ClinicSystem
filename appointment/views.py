@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from .models import *
 from django.utils import timezone
 from datetime import timedelta, datetime
+from .forms import *
 from django.core.exceptions import PermissionDenied
 
 def home(request):
@@ -140,12 +141,6 @@ def booking_confirm(request):
             'time_slot','patient','time_slot__doctor'
         )
 
-    appointment, created = Appointment.objects.get_or_create(
-        time_slot_id=time_slot_id, patient_id=patient_id, time_slot__doctor_id=doctor_id
-    )
-    return render(request, "appointment/booking_confirm.html",{
-        "appointment":appointment
-    })
         appointment, created = Appointment.objects.get_or_create(
             time_slot_id=time_slot_id, patient_id=patient_id, time_slot__doctor_id=doctor_id
         )
@@ -155,5 +150,25 @@ def booking_confirm(request):
     else:
         raise PermissionDenied
 
-def patient_view(request):
-    return render(request, "appointment/patient_view.html")
+@login_required
+def patient_view(request, id):
+    patient = get_object_or_404(Patient, id=id)
+    userID = request.user.id
+    if userID == patient.account_id:
+        edit_mode = request.GET.get('edit') == 'true'
+
+        form = PatientForm(request.POST or None, instance=patient)
+
+        if request.method == 'POST':
+            if form.is_valid():
+                form.save()
+                return redirect('patient_view', patient.id)
+
+        return render(request, "appointment/patient_view.html", {
+            "patient": patient,
+            "edit_mode": edit_mode,
+            "form": form
+        })
+
+    else:
+        raise PermissionDenied

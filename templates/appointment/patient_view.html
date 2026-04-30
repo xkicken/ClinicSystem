@@ -3,5 +3,33 @@
 {% block title %}Patient View{% endblock %}
 
 {% block content %}
+    <div class="container mt-5">
+    <div class="card shadow-sm p-4">
 
+        {% if edit_mode %}
+            <h3>Edit Patient</h3>
+
+            <form method="POST">
+                {% csrf_token %}
+
+                {{ form.as_p }}
+
+                <button class="btn btn-success">Save</button>
+                <a href="?edit=false" class="btn btn-secondary">Cancel</a>
+            </form>
+
+        {% else %}
+            <h3>{{ patient.first_name }} {{ patient.last_name }}</h3>
+            <p><strong>Address:</strong> {{ patient.address }}</p>
+            <p><strong>Date of Birth:</strong> {{ patient.date_of_birth }}</p>
+            <p><strong>Gender:</strong> {{ patient.gender }}</p>
+            <p><strong>Emergency Contact:</strong> {{ patient.emergency_contact }}</p>
+            <p><strong>Emergency Contact Phone:</strong> {{ patient.emergency_contact_phone }}</p>
+            <p><strong>Phone:</strong> {{ patient.phone }}</p>
+
+            <a href="?edit=true" class="btn btn-primary">Edit</a>
+        {% endif %}
+
+    </div>
+</div>
 {% endblock %}
