@@ -153,3 +153,5 @@ def booking_confirm(request):
         "appointment":appointment
     })
 
+def patient_view(request):
+    return render(request, "appointment/patient_view.html")

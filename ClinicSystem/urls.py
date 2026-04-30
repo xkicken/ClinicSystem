@@ -28,5 +28,6 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     path('calendar/', calendar, name='calendar'),
     path('booking/', booking, name='booking'),
-    path('booking_confirm/', booking_confirm, name='booking_confirm')
+    path('booking_confirm/', booking_confirm, name='booking_confirm'),
+    path('patient_view/', patient_view, name='patient_view')
 ]
