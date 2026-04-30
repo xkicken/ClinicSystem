@@ -123,3 +123,6 @@ def booking(request):
         "doctors": Doctor.objects.all(),
     })
 
+def booking_confirm(request):
+    return render(request, "appointment/booking_confirm.html")
+
