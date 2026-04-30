@@ -1,9 +1,11 @@
 document.addEventListener('DOMContentLoaded', function () {
     const doctorEl = document.getElementById('selected_doctor');
     const slotsEl = document.getElementById('time_slots_available');
+    const patientEl = document.getElementById('selected_patient');
 
     let selected_doctor = null;
     let timeslots = [];
+    let selected_patient = null;
 
     if (doctorEl) {
         selected_doctor = JSON.parse(doctorEl.textContent);
@@ -11,6 +13,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (slotsEl) {
         timeslots = JSON.parse(slotsEl.textContent || '[]');
+    }
+
+    if (patientEl) {
+        selected_patient = JSON.parse(patientEl.textContent);
     }
 
     const calendarEl = document.getElementById('calendar');
@@ -41,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 console.log(doctor);
 
                 window.location.href =
-                    `/booking/?doctor=${doctor}&start=${info.event.start.toISOString()}&end=${info.event.end.toISOString()}`;
+                    `/booking_confirm/?doctor=${doctor}&start=${info.event.start.toISOString()}&patient=${selected_patient.id}`;
             };
 
             let modal = new bootstrap.Modal(document.getElementById('eventModal'));

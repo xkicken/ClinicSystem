@@ -87,6 +87,7 @@ def calendar(request):
     return render(request, "appointment/calendar.html")
 
 def booking(request):
+    patient_id = request.GET.get('patient')
 
     doctor_id = request.GET.get('doctor')
 
@@ -96,14 +97,23 @@ def booking(request):
 
     local_date = timezone.now().date()
 
-    selected_doctor = Doctor.objects.get(id=doctor_id)
-    selected_doctor_json = {
-        'id': selected_doctor.id,
-        'first_name': selected_doctor.account.first_name,
-        'last_name': selected_doctor.account.last_name,
-        'specialty': selected_doctor.specialty.name if selected_doctor.specialty else None
-    }
+
     if doctor_id:
+
+        selected_doctor = Doctor.objects.get(id=doctor_id)
+        selected_doctor_json = {
+            'id': selected_doctor.id,
+            'first_name': selected_doctor.account.first_name,
+            'last_name': selected_doctor.account.last_name,
+            'specialty': selected_doctor.specialty.name if selected_doctor.specialty else None
+        }
+        selected_patient = Patient.objects.get(id=patient_id)
+        selected_patient_json = {
+            'id': selected_patient.id,
+            'first_name': selected_patient.first_name,
+            'last_name': selected_patient.last_name
+        }
+
         print("doctor id exist")
         time_slots_available = []
         for slot in time_slots:
@@ -116,11 +126,14 @@ def booking(request):
             "doctors": Doctor.objects.all(),
             "selected_doctor": Doctor.objects.get(id=doctor_id),
             "selected_doctor_json": selected_doctor_json,
-            "data": time_slots_available
+            "data": time_slots_available,
+            "selected_patient": Patient.objects.get(id=patient_id),
+            "selected_patient_json": selected_patient_json
         })
 
     return  render(request, "appointment/booking.html",{
         "doctors": Doctor.objects.all(),
+        "selected_patient": Patient.objects.get(id=patient_id),
     })
 
 def booking_confirm(request):
