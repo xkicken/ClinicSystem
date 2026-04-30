@@ -13,30 +13,30 @@
             <!-- Booking Details -->
             <div class="text-start">
 
-                <p><strong>Booking ID:</strong> {{ booking.id }}</p>
+                <p><strong>Booking ID:</strong> {{ appointment.id }}</p>
 
                 <p><strong>Patient:</strong>
-                    {{ booking.patient.first_name }} {{ booking.patient.last_name }}
+                    {{ appointment.patient.first_name }} {{ appointment.patient.last_name }}
                 </p>
 
                 <p><strong>Doctor:</strong>
-                    Dr. {{ booking.time_slot.doctor.first_name }} {{ booking.time_slot.doctor.last_name }}
+                    Dr. {{ appointment.time_slot.doctor.account.first_name }} {{ appointment.time_slot.doctor.account.last_name }}
                 </p>
 
                 <p><strong>Specialty:</strong>
-                    {{ booking.time_slot.doctor.specialty }}
+                    {{ appointment.time_slot.doctor.specialty }}
                 </p>
 
                 <p><strong>Date:</strong>
-                    {{ booking.time_slot.date }}
+                    {{ appointment.time_slot.date }}
                 </p>
 
                 <p><strong>Time:</strong>
-                    {{ booking.time_slot.start_time }} - {{ booking.time_slot.end_time }}
+                    {{ appointment.time_slot.start_time }} - {{ appointment.time_slot.end_time }}
                 </p>
 
                 <p><strong>Status:</strong>
-                    <span class="badge bg-success">{{ booking.appointment_status }}</span>
+                    <span class="badge bg-success">{{ appointment.appointment_status }}</span>
                 </p>
 
             </div>

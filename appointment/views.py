@@ -139,5 +139,17 @@ def booking(request):
     })
 
 def booking_confirm(request):
-    return render(request, "appointment/booking_confirm.html")
+    doctor_id = request.GET.get('doctor')
+    time_slot_id = request.GET.get('time_slot')
+    patient_id = request.GET.get('patient')
+    appointment = Appointment.objects.select_related(
+        'time_slot','patient','time_slot__doctor'
+    )
+
+    appointment, created = Appointment.objects.get_or_create(
+        time_slot_id=time_slot_id, patient_id=patient_id, time_slot__doctor_id=doctor_id
+    )
+    return render(request, "appointment/booking_confirm.html",{
+        "appointment":appointment
+    })
 
