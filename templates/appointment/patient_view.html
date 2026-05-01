@@ -4,32 +4,71 @@
 
 {% block content %}
     <div class="container mt-5">
-    <div class="card shadow-sm p-4">
+        <div class="card shadow-sm p-4">
 
-        {% if edit_mode %}
-            <h3>Edit Patient</h3>
+            {% if edit_mode %}
+                <h3>Edit Patient</h3>
 
-            <form method="POST">
-                {% csrf_token %}
+                <form method="POST">
+                    {% csrf_token %}
 
-                {{ form.as_p }}
+                    {{ form.as_p }}
 
-                <button class="btn btn-success">Save</button>
-                <a href="?edit=false" class="btn btn-secondary">Cancel</a>
-            </form>
+                    <button class="btn btn-success">Save</button>
+                    <a href="?edit=false" class="btn btn-secondary">Cancel</a>
+                </form>
 
-        {% else %}
-            <h3>{{ patient.first_name }} {{ patient.last_name }}</h3>
-            <p><strong>Address:</strong> {{ patient.address }}</p>
-            <p><strong>Date of Birth:</strong> {{ patient.date_of_birth }}</p>
-            <p><strong>Gender:</strong> {{ patient.gender }}</p>
-            <p><strong>Emergency Contact:</strong> {{ patient.emergency_contact }}</p>
-            <p><strong>Emergency Contact Phone:</strong> {{ patient.emergency_contact_phone }}</p>
-            <p><strong>Phone:</strong> {{ patient.phone }}</p>
-
-            <a href="?edit=true" class="btn btn-primary">Edit</a>
-        {% endif %}
-
+            {% else %}
+                <h3>{{ patient.first_name }} {{ patient.last_name }}</h3>
+                <p><strong>Address:</strong> {{ patient.address }}</p>
+                <p><strong>Date of Birth:</strong> {{ patient.date_of_birth }}</p>
+                <p><strong>Gender:</strong> {{ patient.gender }}</p>
+                <p><strong>Emergency Contact:</strong> {{ patient.emergency_contact }}</p>
+                <p><strong>Emergency Contact Phone:</strong> {{ patient.emergency_contact_phone }}</p>
+                <p><strong>Phone:</strong> {{ patient.phone }}</p>
+                <div class="d-flex gap-2">
+                    <a href="?edit=true" class="btn btn-primary">Edit</a>
+                    <a href="#"
+                       class="btn btn-danger"
+                       data-bs-toggle="modal"
+                       data-bs-target="#deleteModal{{ patient.id }}">
+                        Delete
+                    </a>
+                </div>
+            {% endif %}
+        </div>
     </div>
-</div>
+
+    <div class="modal fade" id="deleteModal{{ patient.id }}" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirm Delete</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    Are you sure you want to delete
+                    <strong>{{ patient.first_name }} {{ patient.last_name }}</strong>?
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+
+                    <form method="post" action="{% url 'delete_patient' patient.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">
+                            Yes, Delete
+                        </button>
+                    </form>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
 {% endblock %}

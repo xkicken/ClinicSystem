@@ -150,29 +150,27 @@ def booking_confirm(request):
 @login_required
 def patient_view(request, id):
     patient = get_object_or_404(Patient, id=id)
-    userID = request.user.id
-    if userID == patient.account_id:
-        edit_mode = request.GET.get('edit') == 'true'
-
-        form = PatientForm(request.POST or None, instance=patient)
-
-        if request.method == 'POST':
-            if form.is_valid():
-                form.save()
-                return redirect('patient_view', patient.id)
-
-        return render(request, "appointment/patient_view.html", {
-            "patient": patient,
-            "edit_mode": edit_mode,
-            "form": form
-        })
-
-    else:
+    if request.user.id != patient.account.id:
         raise PermissionDenied
+
+    edit_mode = request.GET.get('edit') == 'true'
+
+    form = PatientForm(request.POST or None, instance=patient)
+
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save()
+            return redirect('patient_view', patient.id)
+
+    return render(request, "appointment/patient_view.html", {
+        "patient": patient,
+        "edit_mode": edit_mode,
+        "form": form
+    })
 
 def booking_view(request, id):
     appointment = get_object_or_404(Appointment.objects.select_related('time_slot', 'patient', 'time_slot__doctor'), id=id)
-    if request.user.id == appointment.patient.account.id:
+    if request.user.id != appointment.patient.account.id:
         raise PermissionDenied
 
     edit_mode = request.GET.get('edit') == 'true'
@@ -239,3 +237,9 @@ def add_patient(request):
         form = PatientForm()
     return render(request, 'appointment/add_patient.html', {'form': form})
 
+def delete_patient(request, id):
+    patient = get_object_or_404(Patient, id=id)
+    if request.user.id != patient.account.id:
+        raise PermissionDenied
+    patient.delete()
+    return redirect('user_dashboard')

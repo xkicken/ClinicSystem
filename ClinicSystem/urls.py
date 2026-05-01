@@ -31,5 +31,6 @@ urlpatterns = [
     path('patient/<int:id>/', patient_view, name='patient_view'),
     path('booking/view/<int:id>/', booking_view, name='booking_view'),
     path('profile/<int:id>/', profile, name='profile'),
-    path('add_patient/', add_patient, name='add_patient')
+    path('add_patient/', add_patient, name='add_patient'),
+    path('delete_patient/<int:id>/', delete_patient, name='delete_patient')
 ]
