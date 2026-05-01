@@ -59,24 +59,26 @@
                     </li>
                     {% if user.is_authenticated %}{% if user.groups.all.0.name == "User" %}
                         <li class="nav-item">
-                            <a class="nav-link text-success fw-bold link-success link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="#">+ Add Patient</a>
+                            <a class="nav-link text-success fw-bold link-success link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+                               href="#">+ Add Patient</a>
                         </li>
                     {% endif %}{% endif %}
-                    </ul>
-
+                {% endif %}
+            </ul>
+                {% if user.is_authenticated %}
                     {% if user.groups.all %}{% if user.groups.all.0.name == "Doctor" %}
                         <span class="navbar-text ms-3 px-3 py-1 border-start border-2">
-                Welcome Dr.{{ user.get_full_name }}
-              </span>
+                            Welcome Dr.{{ user.get_full_name }}
+                        </span>
                     {% else %}
                         <span class="navbar-text ms-3 px-3 py-1 border-start border-2">
-                Welcome {{ user.get_full_name }}
-              </span>
+                            Welcome {{ user.get_full_name }}
+                        </span>
                     {% endif %}{% endif %}
                 {% else %}
-                    <span class="navbar-text ms-3 px-2 py-1 border-start border-2">
-            Welcome Guest
-          </span>
+                    <span class="navbar-text ms-3 px-3 py-1 border-start border-2">
+                        Welcome Guest
+                    </span>
                 {% endif %}
 
             <!-- RIGHT SIDE -->
@@ -104,11 +106,13 @@
 </nav>
 
 
-    {% block content %}
-    {% endblock %}
+{% block content %}
+{% endblock %}
 
-    <script src="{% static 'appointment/js/base.js' %}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-    {% block extra_js %}{% endblock %}
+<script src="{% static 'appointment/js/base.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+{% block extra_js %}{% endblock %}
 </body>
 </html>
