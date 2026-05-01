@@ -17,6 +17,11 @@ document.addEventListener('DOMContentLoaded', function () {
             listWeek: {buttonText: 'List'}
         },
 
+        eventClick: function (info) {
+            const eventId = info.event.id;
+
+            window.location.href = `/booking/view/${eventId}/`;
+        },
         events: appointment
     });
     calendar.render();

@@ -172,3 +172,20 @@ def patient_view(request, id):
 
     else:
         raise PermissionDenied
+def booking_view(request, id):
+    appointment = get_object_or_404(Appointment.objects.select_related('time_slot', 'patient', 'time_slot__doctor'), id=id)
+    if request.user.id == appointment.patient.account.id:
+        edit_mode = request.GET.get('edit') == 'true'
+
+        form = BookingForm(request.POST or None, instance=appointment)
+
+        if request.method == 'POST':
+            if form.is_valid():
+                form.save()
+                return redirect('booking_view', id)
+
+        return render(request, "appointment/booking_view.html", {
+            "appointment": appointment,
+            "edit_mode": edit_mode,
+            "form": form
+        })

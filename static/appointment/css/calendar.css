@@ -2,3 +2,25 @@
   white-space: normal;
   word-wrap: break-word;
 }
+
+.fc-timegrid-event {
+  min-height: 28px;
+  padding: 4px;
+  font-size: 12px;
+}
+
+.fc-event {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.fc-event:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.card:hover {
+    transform: scale(1.02);
+    transition: 0.2s;
+    box-shadow: 0 0 10px rgba(255,255,255,0.15);
+}
