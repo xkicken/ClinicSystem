@@ -226,3 +226,16 @@ def profile(request, id):
         "profile_form": profile_form
     })
 
+@login_required()
+def add_patient(request):
+    if request.method == 'POST':
+        form = PatientForm(request.POST)
+        if form.is_valid():
+            patient = form.save(commit=False)
+            patient.account = request.user
+            patient.save()
+            return redirect('user_dashboard',)
+    else:
+        form = PatientForm()
+    return render(request, 'appointment/add_patient.html', {'form': form})
+
