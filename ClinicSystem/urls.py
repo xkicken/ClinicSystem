@@ -19,6 +19,7 @@ from django.urls import path, include
 from appointment.views import *
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('accounts/', include('django.contrib.auth.urls')),
     path('home/', home, name='home'),
     path('profile/', profile, name='profile'),
     path('doctor_dashboard/', doctor_dashboard, name='doctor_dashboard'),
