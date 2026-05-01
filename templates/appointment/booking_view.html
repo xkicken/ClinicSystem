@@ -25,7 +25,7 @@
             <p><strong>Appointment Date:</strong> {{ appointment.time_slot.date }}</p>
             <p><strong>Appointment Time:</strong> {{ appointment.time_slot.start_time }} - {{ appointment.time_slot.end_time }}</p>
             <p><strong>Appointment Status:</strong> {{ appointment.appointment_status }}</p>
-            <a href="?edit=true" class="btn btn-primary">Edit</a>
+            <div class="d-flex gap-2"><a href="?edit=true" class="btn btn-primary">Edit</a></div>
         {% endif %}
 
     </div>
