@@ -30,4 +30,5 @@ urlpatterns = [
     path('booking_confirm/', booking_confirm, name='booking_confirm'),
     path('patient/<int:id>/', patient_view, name='patient_view'),
     path('booking/view/<int:id>/', booking_view, name='booking_view'),
+    path('profile/<int:id>/', profile, name='profile'),
 ]

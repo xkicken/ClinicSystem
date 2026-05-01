@@ -42,7 +42,7 @@
 
                 {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'profile' %}">Profile</a>
+                        <a class="nav-link" href="{% url 'profile' user.id %}">Profile</a>
                     </li>
 
                     {% if user.groups.all %}{% if user.groups.all.0.name == "Doctor" %}

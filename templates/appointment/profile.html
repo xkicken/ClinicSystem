@@ -1,0 +1,33 @@
+{% extends 'appointment/base.html' %}
+{% load static %}
+
+{% block title %}Profile View{% endblock %}
+
+{% block content %}
+    <div class="container mt-5">
+        <div class="card shadow-sm p-4">
+
+            {% if edit_mode %}
+                <h3>Edit Profile</h3>
+
+                <form method="POST">
+                    {% csrf_token %}
+
+                    {{ user_form.as_p }}
+                    {{ profile_form.as_p }}
+
+                    <button class="btn btn-success">Save</button>
+                    <a href="?edit=false" class="btn btn-secondary">Cancel</a>
+                </form>
+
+            {% else %}
+                <h3>{{ user_profile.user.first_name }} {{ user_profile.user.last_name }}</h3>
+                <p><strong>Email:</strong> {{ user_profile.user.email }}</p>
+                <p><strong>Phone:</strong> {{ user_profile.phone }}</p>
+                <p><strong>Address:</strong> {{ user_profile.address }}</p>
+                <a href="?edit=true" class="btn btn-primary">Edit</a>
+            {% endif %}
+
+        </div>
+    </div>
+{% endblock %}

@@ -9,9 +9,6 @@ from django.core.exceptions import PermissionDenied
 def home(request):
     doctors = Doctor.objects.select_related('specialty', 'account').all()
     return render(request, 'appointment/home.html', {'doctors': doctors})
-
-def profile(request):
-    return render(request, 'appointment/profile.html')
 # Create your views here.
 def doctor_dashboard(request):
     return render(request, 'appointment/doctor_dashboard.html')
@@ -172,20 +169,60 @@ def patient_view(request, id):
 
     else:
         raise PermissionDenied
+
 def booking_view(request, id):
     appointment = get_object_or_404(Appointment.objects.select_related('time_slot', 'patient', 'time_slot__doctor'), id=id)
     if request.user.id == appointment.patient.account.id:
-        edit_mode = request.GET.get('edit') == 'true'
+        raise PermissionDenied
 
-        form = BookingForm(request.POST or None, instance=appointment)
+    edit_mode = request.GET.get('edit') == 'true'
 
-        if request.method == 'POST':
-            if form.is_valid():
-                form.save()
-                return redirect('booking_view', id)
+    form = BookingForm(request.POST or None, instance=appointment)
 
-        return render(request, "appointment/booking_view.html", {
-            "appointment": appointment,
-            "edit_mode": edit_mode,
-            "form": form
-        })
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save()
+            return redirect('booking_view', id)
+
+    return render(request, "appointment/booking_view.html", {
+        "appointment": appointment,
+        "edit_mode": edit_mode,
+        "form": form
+    })
+
+@login_required
+def profile(request, id):
+    user_profile = get_object_or_404(
+        UserProfile.objects.select_related('user'),
+        id=id
+    )
+
+    if request.user.id != user_profile.user.id:
+        raise PermissionDenied
+
+    edit_mode = request.GET.get('edit', '').lower() == 'true'
+
+    user_form = UserForm(
+        request.POST or None,
+        instance=user_profile.user
+    )
+
+    profile_form = ProfileForm(
+        request.POST or None,
+        request.FILES or None,
+        instance=user_profile
+    )
+
+    if request.method == 'POST':
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            return redirect('profile', id=id)
+
+    return render(request, "appointment/profile.html", {
+        "user_profile": user_profile,
+        "edit_mode": edit_mode,
+        "user_form": user_form,
+        "profile_form": profile_form
+    })
+
