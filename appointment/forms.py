@@ -32,6 +32,14 @@ class BookingForm(forms.ModelForm):
             ('CANCELLED', 'Cancelled'),
         ]
 
+class DoctorBookingForm(forms.ModelForm):
+    class Meta:
+        model = Appointment
+        fields = ['appointment_status']
+
+        widgets = {
+            'appointment_status': forms.Select(attrs={'class': 'form-control'}),
+        }
 
 class UserForm(forms.ModelForm):
     class Meta:

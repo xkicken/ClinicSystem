@@ -21,10 +21,12 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')),
     path('home/', home, name='home'),
-    path('doctor_dashboard/', doctor_dashboard, name='doctor_dashboard'),
+
     path('user_dashboard/', user_dashboard, name='user_dashboard'),
     path("hijack/", include("hijack.urls")),
     path('accounts/', include('django.contrib.auth.urls')),
+
+    # patient
     path('calendar/', calendar, name='calendar'),
     path('booking/', booking, name='booking'),
     path('booking_confirm/', booking_confirm, name='booking_confirm'),
@@ -32,5 +34,8 @@ urlpatterns = [
     path('booking/view/<int:id>/', booking_view, name='booking_view'),
     path('profile/<int:id>/', profile, name='profile'),
     path('add_patient/', add_patient, name='add_patient'),
-    path('delete_patient/<int:id>/', delete_patient, name='delete_patient')
+    path('delete_patient/<int:id>/', delete_patient, name='delete_patient'),
+
+    # doctor
+    path('doctor_dashboard/', doctor_dashboard, name='doctor_dashboard'),
 ]
