@@ -44,46 +44,42 @@ def user_dashboard(request):
 def calendar(request):
     user = request.user
     group = user.groups.first().name if user.groups.exists() else None
+    events = []
+    patients = None
     if group == "Doctor":
         appointments = Appointment.objects.select_related(
             'patient', 'time_slot', 'time_slot__doctor'
         ).filter(time_slot__doctor_id=user.id, appointment_status='BOOKED')
+        pass
+    elif group == "User":
+        patients = Patient.objects.filter(account_id=user.id)
+        pass
+    elif group  == "Admin":
+        patients = Patient.objects.all()
+        pass
 
-        events = []
+    if patients is None:
+        return render(request, "appointment/calendar.html", {
+        })
+    else:
+        pass
+
+    for p in patients:
+        appointments = Appointment.objects.select_related(
+            'time_slot', 'time_slot__doctor'
+        ).filter(patient_id=p.id)
+
         for apt in appointments:
             events.append({
                 'id': apt.id,
-                'title': f"{apt.patient.first_name} {apt.patient.last_name}",
+                'title': f"{p.first_name} {p.last_name}",
                 'start': f"{apt.time_slot.date}T{apt.time_slot.start_time}",
                 'end': f"{apt.time_slot.date}T{apt.time_slot.end_time}",
             })
 
-        return render(request, "appointment/calendar.html", {
-            "data": events
-        })
-    elif group == "User":
-        patients = Patient.objects.filter(account_id=user.id)
-
-        events = []
-
-        for p in patients:
-            appointments = Appointment.objects.select_related(
-                'time_slot', 'time_slot__doctor'
-            ).filter(patient_id=p.id)
-
-            for apt in appointments:
-                events.append({
-                    'id': apt.id,
-                    'title': f"{p.first_name} {p.last_name}",
-                    'start': f"{apt.time_slot.date}T{apt.time_slot.start_time}",
-                    'end': f"{apt.time_slot.date}T{apt.time_slot.end_time}",
-                })
-        return render(request, "appointment/calendar.html", {
-            "data": events
-        })
-
-    return render(request, "appointment/calendar.html")
-
+    return render(request, "appointment/calendar.html", {
+        "data": events
+    })
 @login_required
 def booking(request):
     user_id = request.user.id
@@ -184,6 +180,9 @@ def booking_view(request, id):
         form = BookingForm(request.POST or None, instance=appointment)
         pass
     elif request.user.id == appointment.time_slot.doctor.account.id:
+        form = DoctorBookingForm(request.POST or None, instance=appointment)
+        pass
+    elif request.user.groups.filter(name='Admin').exists():
         form = DoctorBookingForm(request.POST or None, instance=appointment)
         pass
     else:
