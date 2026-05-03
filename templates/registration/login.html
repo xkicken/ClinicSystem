@@ -29,7 +29,14 @@
                 </div>
             {% endif %}
 
-            <button class="btn btn-primary w-100">Login</button>
+            <button class="btn btn-primary w-100 mb-3">Login</button>
+            
+            <div class="text-center">
+                <small class="text-muted">
+                    Don't have an account? 
+                    <a href="{% url 'register' %}" class="text-primary text-decoration-none">Register here</a>
+                </small>
+            </div>
         </form>
 
     </div>

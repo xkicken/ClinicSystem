@@ -1,5 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import login
+from django.contrib.auth.models import Group
 from .models import *
 from django.utils import timezone
 from datetime import timedelta, datetime
@@ -21,6 +23,26 @@ def home(request):
     }
     
     return render(request, 'appointment/home.html', context)
+
+def register(request):
+    if request.method == 'POST':
+        form = RegistrationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+
+            user_group = Group.objects.get_or_create(name='User')[0]
+            user.groups.add(user_group)
+
+            UserProfile.objects.create(user=user)
+
+            login(request, user)
+            
+            return redirect('user_dashboard')
+    else:
+        form = RegistrationForm()
+    
+    return render(request, 'registration/register.html', {'form': form})
+
 def doctor_dashboard(request):
     user = request.user
     appointments = Appointment.objects.select_related(

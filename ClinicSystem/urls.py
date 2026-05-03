@@ -21,6 +21,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')),
     path('home/', home, name='home'),
+    path('register/', register, name='register'),
 
     path('user_dashboard/', user_dashboard, name='user_dashboard'),
     path("hijack/", include("hijack.urls")),
