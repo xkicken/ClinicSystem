@@ -73,7 +73,7 @@
                     {% if user.is_authenticated %}{% if user.groups.all.0.name == "Admin" %}
                         <li class="nav-item">
                             <a class="nav-link text-success fw-bold link-success link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
-                               href="{% url 'add_patient' %}">+ Add Doctor</a>
+                               href="{% url 'add_doctor' %}">+ Add Doctor</a>
                         </li>
                     {% endif %}{% endif %}
 

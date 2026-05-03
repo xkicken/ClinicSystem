@@ -42,5 +42,7 @@ urlpatterns = [
     # admin
     path('admin_dashboard/', admin_dashboard, name='admin_dashboard'),
     path('doctor/<int:id>/', doctor_view, name='doctor_view'),
-    path('delete_doctor/<int:id>/', delete_doctor, name='delete_doctor')
+    path('delete_doctor/<int:id>/', delete_doctor, name='delete_doctor'),
+    path('add_doctor/', add_doctor, name='add_doctor')
+
 ]

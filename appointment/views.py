@@ -263,7 +263,7 @@ def admin_dashboard(request):
 
 def doctor_view(request, id):
     doctor = get_object_or_404(Doctor, id=id)
-    if request.user.groups.filter(name='Admin').exists() is False:
+    if not request.user.groups.filter(name='Admin').exists():
         raise PermissionDenied
 
     edit_mode = request.GET.get('edit') == 'true'
@@ -294,7 +294,34 @@ def doctor_view(request, id):
 
 def delete_doctor(request, id):
     doctor = get_object_or_404(Doctor, id=id)
-    if request.user.groups.filter(name='Admin').exists() is False:
+    if not request.user.groups.filter(name='Admin').exists():
         raise PermissionDenied
     doctor.delete()
     return redirect('admin_dashboard')
+
+def add_doctor(request):
+    if request.method == 'POST':
+        doctor_form = DoctorForm(request.POST)
+        user_form = UserForm(request.POST)
+        
+        if doctor_form.is_valid() and user_form.is_valid():
+            user = user_form.save(commit=False)
+            user.save()
+
+            doctor = doctor_form.save(commit=False)
+            doctor.account = user
+            doctor.save()
+
+            from django.contrib.auth.models import Group
+            doctor_group = Group.objects.get(name='Doctor')
+            user.groups.add(doctor_group)
+            
+            return redirect('admin_dashboard')
+    else:
+        doctor_form = DoctorForm()
+        user_form = UserForm()
+    
+    return render(request, 'appointment/add_doctor.html', {
+        'doctor_form': doctor_form,
+        'user_form': user_form
+    })
