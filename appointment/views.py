@@ -11,7 +11,13 @@ def home(request):
     return render(request, 'appointment/home.html', {'doctors': doctors})
 # Create your views here.
 def doctor_dashboard(request):
-    return render(request, 'appointment/doctor_dashboard.html')
+    user = request.user
+    appointments = Appointment.objects.select_related(
+        'patient', 'time_slot', 'time_slot__doctor'
+    ).filter(time_slot__doctor__account=user.id, appointment_status='BOOKED', time_slot__date=timezone.localtime().date())
+    return render(request, 'appointment/doctor_dashboard.html', {
+        'appointments': appointments
+    })
 
 @login_required()
 def user_dashboard(request):
@@ -139,8 +145,12 @@ def booking_confirm(request):
         )
 
         appointment, created = Appointment.objects.get_or_create(
-            time_slot_id=time_slot_id, patient_id=patient_id, time_slot__doctor_id=doctor_id
+            time_slot_id=time_slot_id, patient_id=patient_id
         )
+
+        if created:
+            TimeSlot.objects.filter(id=time_slot_id).update(booked=True)
+        
         return render(request, "appointment/booking_confirm.html",{
             "appointment":appointment
         })

@@ -1,0 +1,65 @@
+{% extends 'appointment/base.html' %}
+{% load static %}
+
+{% block title %}Patient Dashboard{% endblock %}
+<link rel="stylesheet" href="{% static 'appointment/css/user_dashboard.css' %}">
+{% block head_extra %}
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="container pt-4">
+        <h2 class="fw-bold text-center">Doctor Dashboard</h2>
+        <p class="text-muted text-center">Today's appointments</p>
+    </div>
+
+
+    <!-- Patient List -->
+    <div class="container pb-5 d-flex justify-content-center">
+
+        <div class="card shadow-sm border-0 w-100" style="max-width: 1000px;">
+            <div class="card-body">
+
+                {% for apt in appointments %}
+                    <div class="d-flex justify-content-between align-items-center p-3 mb-3 rounded-3 border bg-body">
+
+                        <!-- Left: Patient info -->
+                        <div>
+
+                            <div class="fw-semibold fs-5">
+                                👤 {{ apt.patient.first_name }} {{ apt.patient.last_name }}
+                            </div>
+
+                            <div class="text-muted small">
+                                {{ apt.time_slot.date }}
+                                {{ apt.time_slot.start_time }}
+                            </div>
+
+                        </div>
+
+                        <!-- Right: Buttons -->
+
+                        <a href="#"
+                           class="btn btn-primary btn-sm rounded-pill">
+                            View
+                        </a>
+
+                    </div>
+                {% empty %}
+                    <div class="text-center text-muted py-4">
+                        No Appointment For Today<br>
+                        See Calendar for next day's appointment
+                    </div>
+                {% endfor %}
+
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'appointment/js/user_dashboard.js' %}"></script>
+{% endblock %}
