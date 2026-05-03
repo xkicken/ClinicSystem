@@ -50,6 +50,53 @@
         </div>
     </div>
 
+    <div class="container pt-4">
+        <p class="text-muted text-center">View All User and Patient</p>
+    </div>
+
+    <div class="container pb-5 d-flex justify-content-center">
+
+        <div class="card shadow-sm border-0 w-100" style="max-width: 1000px;">
+            <div class="card-body">
+
+                {% for user in users %}
+                    <div class="card mb-4 border">
+                        <div class="card-header bg-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="fw-semibold fs-5">
+                                    👤 {{ user.user.first_name }} {{ user.user.last_name }}
+                                </div>
+                                <a href="{% url 'profile' user.user.id %}" class="btn btn-primary btn-sm rounded-pill">
+                                    View
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            {% if user.patients %}
+                                <h6 class="text-muted mb-3">Patients:</h6>
+                                {% for p in user.patients %}
+                                    <div class="d-flex justify-content-between align-items-center p-2 mb-2 rounded border bg-body">
+                                        <span>👥 {{ p.first_name }} {{ p.last_name }}</span>
+                                        <a href="{% url 'patient_view' p.id %}" class="btn btn-outline-primary btn-sm rounded-pill">
+                                            View
+                                        </a>
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <p class="text-muted">No patients found</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="text-center text-muted py-4">
+                        No Doctor Found
+                    </div>
+                {% endfor %}
+
+            </div>
+        </div>
+    </div>
+
 
 {% endblock %}
 
