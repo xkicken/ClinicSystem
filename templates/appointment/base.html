@@ -47,39 +47,53 @@
 
                     {% if user.groups.all %}{% if user.groups.all.0.name == "Doctor" %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'doctor_dashboard' %}">Doctor Dashboard</a>
+                            <a class="nav-link" href="{% url 'doctor_dashboard' %}">Dashboard</a>
                         </li>
+                    {% else %}{% if user.groups.all.0.name == "User" %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'user_dashboard' %}">Dashboard</a>
+                        </li>
+
                     {% else %}
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'user_dashboard' %}">Dashboard</a>
                         </li>
-                    {% endif %}{% endif %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'calendar' %}">Calendar</a>
-                    </li>
+                    {% endif %}{% endif %}{% endif %}
+                    {% if user.groups.all.0.name == "User" or user.groups.all.0.name == "Doctor" %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'calendar' %}">Calendar</a>
+                        </li>
+                    {% endif %}
                     {% if user.is_authenticated %}{% if user.groups.all.0.name == "User" %}
                         <li class="nav-item">
                             <a class="nav-link text-success fw-bold link-success link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
                                href="{% url 'add_patient' %}">+ Add Patient</a>
                         </li>
                     {% endif %}{% endif %}
+                    {% if user.is_authenticated %}{% if user.groups.all.0.name == "Admin" %}
+                        <li class="nav-item">
+                            <a class="nav-link text-success fw-bold link-success link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+                               href="{% url 'add_patient' %}">+ Add Doctor</a>
+                        </li>
+                    {% endif %}{% endif %}
+
                 {% endif %}
             </ul>
-                {% if user.is_authenticated %}
-                    {% if user.groups.all %}{% if user.groups.all.0.name == "Doctor" %}
-                        <span class="navbar-text ms-3 px-3 py-1 border-start border-2">
+            {% if user.is_authenticated %}
+                {% if user.groups.all %}{% if user.groups.all.0.name == "Doctor" %}
+                    <span class="navbar-text ms-3 px-3 py-1 border-start border-2">
                             Welcome Dr.{{ user.get_full_name }}
                         </span>
-                    {% else %}
-                        <span class="navbar-text ms-3 px-3 py-1 border-start border-2">
-                            Welcome {{ user.get_full_name }}
-                        </span>
-                    {% endif %}{% endif %}
                 {% else %}
                     <span class="navbar-text ms-3 px-3 py-1 border-start border-2">
+                            Welcome {{ user.get_full_name }}
+                        </span>
+                {% endif %}{% endif %}
+            {% else %}
+                <span class="navbar-text ms-3 px-3 py-1 border-start border-2">
                         Welcome Guest
                     </span>
-                {% endif %}
+            {% endif %}
 
             <!-- RIGHT SIDE -->
             <div class="ms-auto d-flex align-items-center gap-2">
