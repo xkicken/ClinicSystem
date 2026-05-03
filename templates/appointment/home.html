@@ -1,0 +1,139 @@
+{% extends 'appointment/base.html' %}
+{% load static %}
+
+{% block title %}Home - Clinic System{% endblock %}
+
+{% block content %}
+
+<div class="container pt-4">
+    <div class="text-center">
+        <h2 class="fw-bold">Welcome to Our Clinic</h2>
+        <p class="text-muted">Quality healthcare with experienced doctors across multiple specialties</p>
+    </div>
+</div>
+
+<!-- Stats Section -->
+<div class="container pb-4">
+    <div class="row g-3">
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-body text-center">
+                    <h3 class="fw-bold text-primary">{{ total_doctors }}</h3>
+                    <p class="text-muted mb-0">Expert Doctors</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-body text-center">
+                    <h3 class="fw-bold text-primary">{{ total_specialties }}</h3>
+                    <p class="text-muted mb-0">Medical Specialties</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="container pb-5 d-flex justify-content-center">
+    <div class="card shadow-sm border-0 w-100" style="max-width: 600px;">
+        <div class="card-body text-center">
+            <h5 class="fw-bold mb-3">Get Started</h5>
+            <div class="d-flex gap-2 justify-content-center">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'user_dashboard' %}" class="btn btn-primary rounded-pill">My Dashboard</a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="btn btn-primary rounded-pill">Login</a>
+                    <a href="{% url 'add_patient' %}" class="btn btn-success rounded-pill">Register</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Doctors Section -->
+<div class="container pt-4">
+    <div class="text-center">
+        <h3 class="fw-bold">Available Doctors</h3>
+        <p class="text-muted">Meet our team of experienced medical professionals</p>
+    </div>
+</div>
+
+<div class="container pb-5 d-flex justify-content-center">
+    <div class="card shadow-sm border-0 w-100" style="max-width: 1000px;">
+        <div class="card-body">
+            {% if doctors %}
+                <div class="row g-3">
+                    {% for doctor in doctors %}
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card h-100 border">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="me-3">
+                                            <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                                <span class="fw-bold text-primary">Dr</span>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <h6 class="fw-bold mb-1">Dr. {{ doctor.account.first_name }} {{ doctor.account.last_name }}</h6>
+                                            <small class="text-muted">{{ doctor.specialty.name }}</small>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <small class="text-muted d-block">
+                                            Phone: {{ doctor.phone }}
+                                        </small>
+                                    </div>
+                                    {% if user.is_authenticated %}
+                                        <a href="{% url 'calendar' %}" class="btn btn-primary btn-sm rounded-pill w-100">Book Appointment</a>
+                                    {% else %}
+                                        <a href="{% url 'login' %}" class="btn btn-primary btn-sm rounded-pill w-100">Login to Book</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-4">
+                    <p class="text-muted">No doctors available at the moment</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Specialties Section -->
+<div class="container pt-4">
+    <div class="text-center">
+        <h3 class="fw-bold">Medical Specialties</h3>
+        <p class="text-muted">Comprehensive care across various medical fields</p>
+    </div>
+</div>
+
+<div class="container pb-5 d-flex justify-content-center">
+    <div class="card shadow-sm border-0 w-100" style="max-width: 1000px;">
+        <div class="card-body">
+            {% if specialties %}
+                <div class="row g-3">
+                    {% for specialty in specialties %}
+                        <div class="col-md-4 col-lg-3">
+                            <div class="card border text-center">
+                                <div class="card-body p-3">
+                                    <div class="mb-2">
+                                        <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mx-auto" style="width: 40px; height: 40px;">
+                                            <span class="fw-bold text-primary">S</span>
+                                        </div>
+                                    </div>
+                                    <h6 class="fw-bold mb-0">{{ specialty.name }}</h6>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

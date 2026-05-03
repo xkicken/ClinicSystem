@@ -8,7 +8,20 @@ from django.core.exceptions import PermissionDenied
 
 def home(request):
     doctors = Doctor.objects.select_related('specialty', 'account').all()
-    return render(request, 'appointment/home.html', {'doctors': doctors})
+    specialties = Specialty.objects.all()
+    
+    # Get some stats for the home page
+    total_doctors = doctors.count()
+    total_specialties = specialties.count()
+    
+    context = {
+        'doctors': doctors,
+        'specialties': specialties,
+        'total_doctors': total_doctors,
+        'total_specialties': total_specialties,
+    }
+    
+    return render(request, 'appointment/home.html', context)
 # Create your views here.
 def doctor_dashboard(request):
     user = request.user
@@ -208,7 +221,11 @@ def profile(request, id):
         id=id
     )
 
-    if request.user.id != user_profile.user.id:
+    if request.user.id == user_profile.user.id:
+        pass
+    elif request.user.groups.filter(name='Admin').exists():
+        pass
+    else:
         raise PermissionDenied
 
     edit_mode = request.GET.get('edit', '').lower() == 'true'
@@ -258,7 +275,19 @@ def delete_patient(request, id):
 
 def admin_dashboard(request):
     doctors = Doctor.objects.select_related('account').all()
-    return render(request, 'appointment/admin_dashboard.html' , {"doctors": doctors})
+    users = User.objects.prefetch_related('userprofile', 'patients').filter(groups__name='User')
+    
+    user_data = []
+    for user in users:
+        user_data.append({
+            'user': user,
+            'patients': user.patients.all()
+        })
+
+    return render(request, 'appointment/admin_dashboard.html', {
+        'doctors': doctors,
+        'users': user_data,
+    })
 
 def doctor_view(request, id):
     doctor = get_object_or_404(Doctor, id=id)
