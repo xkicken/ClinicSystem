@@ -86,12 +86,12 @@ def calendar(request):
 
 @login_required
 def booking(request):
-    userID = request.user.id
+    user_id = request.user.id
     patient_id = request.GET.get('patient')
     patient = Patient.objects.get(id=patient_id)
     doctor_id = request.GET.get('doctor')
     time_slots = TimeSlot.objects.filter(doctor_id=doctor_id, booked=False)
-    if userID == patient.account.id:
+    if user_id == patient.account.id:
         if doctor_id:
             selected_doctor = Doctor.objects.get(id=doctor_id)
             selected_doctor_json = {
@@ -134,12 +134,12 @@ def booking(request):
 
 @login_required
 def booking_confirm(request):
-    userID = request.user.id
+    user_id = request.user.id
     doctor_id = request.GET.get('doctor')
     time_slot_id = request.GET.get('time_slot')
     patient_id = request.GET.get('patient')
     patient = Patient.objects.get(id=patient_id)
-    if userID == patient.account.id:
+    if user_id == patient.account.id:
         appointment = Appointment.objects.select_related(
             'time_slot','patient','time_slot__doctor'
         )
