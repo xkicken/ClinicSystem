@@ -21,7 +21,6 @@ def home(request):
     }
     
     return render(request, 'appointment/home.html', context)
-# Create your views here.
 def doctor_dashboard(request):
     user = request.user
     appointments = Appointment.objects.select_related(
