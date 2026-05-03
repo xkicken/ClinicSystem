@@ -221,7 +221,6 @@ def profile(request, id):
 
     profile_form = ProfileForm(
         request.POST or None,
-        request.FILES or None,
         instance=user_profile
     )
 
@@ -257,3 +256,45 @@ def delete_patient(request, id):
         raise PermissionDenied
     patient.delete()
     return redirect('user_dashboard')
+
+def admin_dashboard(request):
+    doctors = Doctor.objects.select_related('account').all()
+    return render(request, 'appointment/admin_dashboard.html' , {"doctors": doctors})
+
+def doctor_view(request, id):
+    doctor = get_object_or_404(Doctor, id=id)
+    if request.user.groups.filter(name='Admin').exists() is False:
+        raise PermissionDenied
+
+    edit_mode = request.GET.get('edit') == 'true'
+
+    form = DoctorForm(
+        request.POST or None,
+        instance=doctor
+    )
+
+    user_form = UserForm(
+        request.POST or None,
+        instance=doctor.account
+    )
+
+    if request.method == 'POST':
+        if form.is_valid() and user_form.is_valid():
+            form.save()
+            user_form.save()
+            return redirect('doctor_view', doctor.id)
+
+    return render(request, "appointment/doctor_view.html", {
+        "doctor": doctor,
+        "account": doctor.account,
+        "edit_mode": edit_mode,
+        "form": form,
+        "user_form": user_form
+    })
+
+def delete_doctor(request, id):
+    doctor = get_object_or_404(Doctor, id=id)
+    if request.user.groups.filter(name='Admin').exists() is False:
+        raise PermissionDenied
+    doctor.delete()
+    return redirect('admin_dashboard')

@@ -1,0 +1,75 @@
+{% extends 'appointment/base.html' %}
+{% load static %}
+
+{% block title %}Profile View{% endblock %}
+
+{% block content %}
+    <div class="container mt-5">
+        <div class="card shadow-sm p-4">
+
+            {% if edit_mode %}
+                <h3>Edit Profile</h3>
+
+                <form method="POST">
+                    {% csrf_token %}
+
+                    {{ user_form.as_p }}
+                    {{ form.as_p }}
+
+                    <button class="btn btn-success">Save</button>
+                    <a href="?edit=false" class="btn btn-secondary">Cancel</a>
+                </form>
+
+            {% else %}
+                <h3>{{ account.first_name }} {{ account.last_name }}</h3>
+                <p><strong>Email:</strong> {{ account.email }}</p>
+                <p><strong>Phone:</strong> {{ doctor.phone }}</p>
+                <p><strong>Specialty:</strong> {{ doctor.specialty.name }}</p>
+                <div class="d-flex gap-2">
+                    <a href="?edit=true" class="btn btn-primary">Edit</a>
+                    <a href="#"
+                       class="btn btn-danger"
+                       data-bs-toggle="modal"
+                       data-bs-target="#deleteModal{{ account.id }}">
+                        Delete
+                    </a>
+                </div>
+
+            {% endif %}
+
+        </div>
+    </div>
+
+    <div class="modal fade" id="deleteModal{{ account.id }}" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirm Delete</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    Are you sure you want to delete
+                    <strong>{{ account.first_name }} {{ account.last_name }}</strong>?
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+
+                    <form method="post" action="{% url 'delete_doctor' account.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">
+                            Yes, Delete
+                        </button>
+                    </form>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

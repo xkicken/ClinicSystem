@@ -1,0 +1,58 @@
+{% extends 'appointment/base.html' %}
+{% load static %}
+
+{% block title %}Patient Dashboard{% endblock %}
+<link rel="stylesheet" href="{% static 'appointment/css/user_dashboard.css' %}">
+{% block head_extra %}
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="container pt-4">
+        <h2 class="fw-bold text-center">Admin Dashboard</h2>
+        <p class="text-muted text-center">View All Doctor</p>
+    </div>
+
+
+    <div class="container pb-5 d-flex justify-content-center">
+
+        <div class="card shadow-sm border-0 w-100" style="max-width: 1000px;">
+            <div class="card-body">
+
+                {% for doc in doctors %}
+                    <div class="d-flex justify-content-between align-items-center p-3 mb-3 rounded-3 border bg-body">
+                        <div>
+
+                            <div class="fw-semibold fs-5">
+                                👤 Dr. {{ doc.account.first_name }} {{ doc.account.last_name }}
+                            </div>
+
+                            <div class="text-muted small">
+                                {{ doc.specialty.name }}
+                            </div>
+
+                        </div>
+
+                        <a href="{% url 'doctor_view' doc.id %}"
+                           class="btn btn-primary btn-sm rounded-pill">
+                            View
+                        </a>
+
+                    </div>
+                {% empty %}
+                    <div class="text-center text-muted py-4">
+                        No Doctor Found
+                    </div>
+                {% endfor %}
+
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'appointment/js/user_dashboard.js' %}"></script>
+{% endblock %}

@@ -61,3 +61,12 @@ class ProfileForm(forms.ModelForm):
             'phone': forms.TextInput(attrs={'class': 'form-control'}),
             'address': forms.TextInput(attrs={'class': 'form-control'}),
         }
+
+class DoctorForm(forms.ModelForm):
+    class Meta:
+        model = Doctor
+        fields = ['specialty']
+
+        widgets = {
+            'specialty': forms.Select(attrs={'class': 'form-control'}),
+        }
