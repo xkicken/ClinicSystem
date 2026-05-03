@@ -9,8 +9,7 @@ from django.core.exceptions import PermissionDenied
 def home(request):
     doctors = Doctor.objects.select_related('specialty', 'account').all()
     specialties = Specialty.objects.all()
-    
-    # Get some stats for the home page
+
     total_doctors = doctors.count()
     total_specialties = specialties.count()
     
