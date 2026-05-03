@@ -4,12 +4,13 @@ A comprehensive Django-based clinic management system for handling appointments,
 
 ## Overview
 
-ClinicSystem is a web application designed to streamline clinic operations by providing:
+ClinicSystem is a modern web application designed to streamline clinic operations by providing:
 - Patient management and registration
 - Doctor scheduling and availability management
 - Appointment booking and tracking
 - User authentication and role-based access
 - Calendar integration for appointment visualization
+- Modern responsive home page with doctor and specialty listings
 
 ## Features
 
@@ -20,6 +21,8 @@ ClinicSystem is a web application designed to streamline clinic operations by pr
 - **Appointment Scheduling**: Book, cancel, and manage appointments with time slot management
 - **Calendar View**: Interactive calendar for viewing appointments by role (doctor/patient)
 - **User Profiles**: Personal profile management with profile pictures
+- **Home Page**: Modern landing page with doctor listings and clinic statistics
+- **User Registration**: Complete user signup system with automatic group assignment
 
 ### Technical Features
 - **PostgreSQL Database**: Robust database backend for data persistence
@@ -189,47 +192,14 @@ Ensure the following environment variables are set in your deployment environmen
 ## API Endpoints
 
 The application uses Django's traditional request/response pattern with the following main views:
-- `/` - Home page with doctor listings
+- `/home/` - Home page with doctor listings and clinic statistics
+- `/register/` - User registration page
+- `/login/` - User authentication
 - `/profile/` - User profile management
 - `/doctor_dashboard/` - Doctor-specific dashboard
-- `/patient_dashboard/` - Patient-specific dashboard
+- `/user_dashboard/` - Patient-specific dashboard
+- `/admin_dashboard/` - Administrative dashboard
 - `/calendar/` - Calendar view for appointments (role-based)
-
-## Security Considerations
-
-- User authentication required for most functionality
-- Role-based access control implemented
-- Environment variables used for sensitive configuration
-- PostgreSQL connection secured with proper credentials
-- CSRF protection enabled
-- Security middleware configured
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Support
-
-For support and questions:
-- Check the Django documentation for framework-specific questions
-- Review the code comments for implementation details
-- Create an issue for bugs or feature requests
-
-## Future Enhancements
-
-Potential areas for improvement:
-- Email notifications for appointments
-- SMS reminders
-- Telemedicine integration
-- Advanced reporting and analytics
-- Mobile application
-- Payment processing integration
-- Electronic health records (EHR) integration
+- `/booking/` - Appointment booking interface
+- `/add_patient/` - Add new patient profile
+- `/add_doctor/` - Add new doctor (admin only)
