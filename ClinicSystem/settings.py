@@ -46,6 +46,10 @@ INSTALLED_APPS = [
     'appointment',
     "hijack",
     "hijack.contrib.admin",
+    'rest_framework',
+    'rest_framework_simplejwt',
+    'corsheaders',
+    'api',
 ]
 
 MIDDLEWARE = [
