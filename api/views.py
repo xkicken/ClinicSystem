@@ -23,3 +23,20 @@ class RegisterView(APIView):
         return Response({
             'detail': serializer.errors
         }, status=status.HTTP_400_BAD_REQUEST)
+
+class MeView (APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        group = user.groups.first().name if user.groups.exists() else None
+        profile_id = user.userprofile.id if hasattr(user, 'userprofile') else None
+        return  Response({
+            'id': user.id,
+            'username': user.username,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'email': user.email,
+            'group': group,
+            'profile_id': profile_id,
+        })
