@@ -2,5 +2,5 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.getdata, name="gatDate"),
+    path('auth/register', views.RegisterView.as_view()),
 ]
