@@ -60,7 +60,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'hijack.middleware.HijackUserMiddleware'
+    'hijack.middleware.HijackUserMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'ClinicSystem.urls'
@@ -71,7 +72,7 @@ TEMPLATES = [
         'DIRS': [BASE_DIR / 'templates']
         ,
         'APP_DIRS': True,
-        'OPTIONS': {
+            'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
