@@ -1,88 +1,81 @@
-import React from "react";
 import ThemeToggle from "./ThemeToggle";
+import { NavLink } from "react-router-dom";
+
 // Usage: <Navbar user={user} onLogout={handleLogout} />
 // user shape: { id, fullName, groupName, isAuthenticated }
 
-export default function Navbar({ user, onLogout }) {
-  const { isAuthenticated, fullName, groupName, id } = user ?? {};
+const getNavLinks = (id) => ({
+  guest: [
+    { to: "/", label: "Home" },
+  ],
+  User: [
+    { to: "/", label: "Home" },
+    { to: `/profile/${id}`, label: "Profile" },
+    { to: "/user-dashboard", label: "Dashboard" },
+    { to: "/calendar", label: "Calendar" },
+    { to: "/add-patient", label: "+ Add Patient", className: "text-success fw-bold" },
+  ],
+  Doctor: [
+    { to: "/", label: "Home" },
+    { to: `/profile/${id}`, label: "Profile" },
+    { to: "/doctor-dashboard", label: "Dashboard" },
+    { to: "/calendar", label: "Calendar" },
+  ],
+  Admin: [
+    { to: "/", label: "Home" },
+    { to: `/profile/${id}`, label: "Profile" },
+    { to: "/admin-dashboard", label: "Dashboard" },
+    { to: "/calendar", label: "Calendar" },
+    { to: "/add-doctor", label: "+ Add Doctor", className: "text-success fw-bold" },
+  ],
+});
 
-  function getDashboardHref() {
-    if (groupName === "Doctor") return "/doctor-dashboard";
-    if (groupName === "User")   return "/user-dashboard";
-    return "/admin-dashboard";
-  }
+function Navbar({ role, id, fullName, isAuthenticated, onLogout }) {
+  const links = getNavLinks(id)[role] || getNavLinks(id).guest;
 
   return (
     <nav className="navbar navbar-expand-lg">
       <div className="container-fluid">
 
-        <a className="navbar-brand" href="/">Clinic System</a>
+        <NavLink className="navbar-brand" to="/">Clinic System</NavLink>
 
         <button className="navbar-toggler" type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarContent">
-          <span className="navbar-toggler-icon" />
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarContent">
+          <span className="navbar-toggler-icon"/>
         </button>
 
         <div className="collapse navbar-collapse" id="navbarContent">
-              <ul className="navbar-nav">
-            <li className="nav-item">
-              <a className="nav-link active" href="/">Home</a>
-            </li>
-
-            {isAuthenticated && (<>
-              <li className="nav-item">
-                <a className="nav-link" href={`/profile/${id}`}>
-                  Profile
-                </a>
+          <ul className="navbar-nav">
+            {links.map(link => (
+              <li className="nav-item" key={link.to}>
+                <NavLink
+                  className={`nav-link ${link.className || ""}`}
+                  to={link.to}
+                >
+                  {link.label}
+                </NavLink>
               </li>
-
-              {groupName && (
-                <li className="nav-item">
-                  <a className="nav-link" href={getDashboardHref()}>
-                    Dashboard
-                  </a>
-                </li>
-              )}
-
-              <li className="nav-item">
-                <a className="nav-link" href="/calendar">Calendar</a>
-              </li>
-
-              {groupName === "User" && (
-                <li className="nav-item">
-                  <a className="nav-link text-success fw-bold"
-                    href="/add-patient">+ Add Patient</a>
-                </li>
-              )}
-
-              {groupName === "Admin" && (
-                <li className="nav-item">
-                  <a className="nav-link text-success fw-bold"
-                    href="/add-doctor">+ Add Doctor</a>
-                </li>
-              )}
-            </>)}
+            ))}
           </ul>
 
           <span className="navbar-text ms-3 px-3 py-1 border-start border-2">
             {isAuthenticated
-              ? `Welcome ${groupName === "Doctor" ? "Dr." : ""}${fullName}`
+              ? `Welcome ${role === "Doctor" ? "Dr." : ""}${fullName}`
               : "Welcome Guest"}
           </span>
 
           <div className="ms-auto d-flex align-items-center gap-2">
-            <ThemeToggle />
+            <ThemeToggle/>
 
             {isAuthenticated ? (
-              <button className="btn btn-danger"
-                onClick={onLogout}>
+              <button className="btn btn-danger" onClick={onLogout}>
                 Logout
               </button>
             ) : (
-              <a href="/login" className="btn btn-outline-success">
+              <NavLink to="/login" className="btn btn-outline-success">
                 Login
-              </a>
+              </NavLink>
             )}
           </div>
         </div>
@@ -90,3 +83,5 @@ export default function Navbar({ user, onLogout }) {
     </nav>
   );
 }
+
+export default Navbar;
