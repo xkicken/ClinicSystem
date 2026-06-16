@@ -1,13 +1,14 @@
 import {useState} from "react";
 import {Link} from "react-router-dom";
-import {apiFetch} from "../api";
 import {useNavigate} from "react-router-dom";
+import {useAuth} from "../context/useAuth.js";
 
 export default function Login() {
     const [credentials, setCredentials] = useState({username: "", password: ""});
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+    const {login} = useAuth();
 
 
     function handleChange(e) {
@@ -20,23 +21,10 @@ export default function Login() {
         setError("");
 
         try {
-            const res = await apiFetch("/auth/login", {
-                method: "POST",
-                body: JSON.stringify(credentials),
-            });
-
-            if (!res.ok) {
-                setError("Invalid username or password");
-            } else {
-                const data = await res.json();
-                localStorage.setItem("access", data.access);
-                localStorage.setItem("refresh", data.refresh);
-                navigate("/dashboard");
-            }
+            await login(credentials.username, credentials.password);
+            navigate("/dashboard");
         } catch {
             setError("Something went wrong. Please try again.");
-        } finally {
-            setLoading(false);
         }
     }
 

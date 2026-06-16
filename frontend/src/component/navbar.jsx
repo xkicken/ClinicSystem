@@ -1,8 +1,5 @@
-import ThemeToggle from "./ThemeToggle";
+import ThemeToggle from "./ThemeToggle.jsx";
 import { NavLink } from "react-router-dom";
-
-// Usage: <Navbar user={user} onLogout={handleLogout} />
-// user shape: { id, fullName, groupName, isAuthenticated }
 
 const getNavLinks = (id) => ({
   guest: [
@@ -30,8 +27,8 @@ const getNavLinks = (id) => ({
   ],
 });
 
-function Navbar({ role, id, fullName, isAuthenticated, onLogout }) {
-  const links = getNavLinks(id)[role] || getNavLinks(id).guest;
+function Navbar({ id, group, firstName, lastName, isAuthenticated, onLogout }) {
+  const links = getNavLinks(id)[group] || getNavLinks(id).guest;
 
   return (
     <nav className="navbar navbar-expand-lg">
@@ -61,7 +58,7 @@ function Navbar({ role, id, fullName, isAuthenticated, onLogout }) {
 
           <span className="navbar-text ms-3 px-3 py-1 border-start border-2">
             {isAuthenticated
-              ? `Welcome ${role === "Doctor" ? "Dr." : ""}${fullName}`
+              ? `Welcome ${group === "Doctor" ? "Dr." : ""}${firstName} ${lastName}`
               : "Welcome Guest"}
           </span>
 

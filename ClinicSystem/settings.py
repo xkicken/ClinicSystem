@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/6.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
-
+from datetime import timedelta
 from pathlib import Path
 import os
 from dotenv import load_dotenv
@@ -53,6 +53,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -61,7 +62,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'hijack.middleware.HijackUserMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'ClinicSystem.urls'
@@ -140,13 +140,30 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'api.authentication.CookieJWTAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
 }
 
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGINS = ["http://localhost:5173"]
+CORS_ALLOW_CREDENTIALS = True
+
+SESSION_COOKIE_SAMESITE = "Lax"
+SESSION_COOKIE_HTTPONLY = True
+CSRF_COOKIE_SAMESITE = "Lax"
 
 
+SIMPLE_JWT = {
+    # Token lifetimes
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+
+    # Cookie settings
+    'AUTH_COOKIE': 'access',
+    'AUTH_COOKIE_REFRESH': 'refresh',
+    'AUTH_COOKIE_SECURE': False,
+    'AUTH_COOKIE_HTTP_ONLY': True,
+    'AUTH_COOKIE_SAMESITE': 'None',
+}

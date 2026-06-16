@@ -1,0 +1,42 @@
+import { useState, useEffect } from "react";
+import { checkAuth, login as loginService, logout as logoutService } from "../services/authService";
+import { AuthContext } from "./authContextObject.js"
+
+export function AuthProvider({ children }) {
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        checkAuth()
+            .then(setUser)
+            .finally(() => setLoading(false));
+    }, []);
+
+    const login = async (username, password) => {
+        setError(null);
+        try {
+            await loginService(username, password);
+
+            const userData = await checkAuth();
+
+            setUser(userData);
+        } catch (err) {
+            setError(err.message);
+            throw err;
+        }
+    };
+
+    const logout = async () => {
+        await logoutService();
+        setUser(null);
+    };
+
+    if (loading) return <div>Loading...</div>;
+
+    return (
+        <AuthContext.Provider value={{ user, login, logout, error }}>
+            {children}
+        </AuthContext.Provider>
+    );
+}
