@@ -1,66 +1,56 @@
-const API = "http://localhost:8000/api";
+import api from "./axiosAPI";
 
 function normalizeUser(data) {
-    return{
+    return {
         ...data,
         firstName: data.first_name,
-        lastName: data.last_name
+        lastName: data.last_name,
     };
 }
+
 export async function checkAuth() {
-    const res = await fetch(`${API}/auth/me`, {
-        credentials: "include",
-    });
+    try {
+        const res = await api.get("/auth/me");
+        return normalizeUser(res.data);
+    } catch (err) {
+        if (err.response?.status === 401) {
+            const refreshed = await refreshToken();
+            if (!refreshed) return null;
 
-    if (res.status === 401) {
-        const refreshed = await refreshToken();
-        if (!refreshed) return null;
-
-        const retry = await fetch(`${API}/auth/me`, {
-            credentials: "include",
-        });
-        if (!retry.ok) return null;
-        return normalizeUser(await retry.json());
+            try {
+                const retry = await api.get("/auth/me");
+                return normalizeUser(retry.data);
+            } catch {
+                return null;
+            }
+        }
+        return null;
     }
-
-    if (!res.ok) return null;
-    return normalizeUser(await res.json());
 }
 
 export async function refreshToken() {
     try {
-        const res = await fetch(`${API}/auth/refresh`, {
-            method: "POST",
-            credentials: "include",
-        });
-        return res.ok;
+        await api.post("/auth/refresh");
+        return true;
     } catch {
         return false;
     }
 }
 
 export async function login(username, password) {
-    const res = await fetch(`${API}/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ username, password }),
-    });
-
-    if (!res.ok) {
-        const err = normalizeUser(await res.json());
-        throw new Error(err.message || "Invalid credentials");
+    try {
+        const res = await api.post("/auth/login", { username, password });
+        return normalizeUser(res.data);
+    } catch (err) {
+        const message = err.response?.data?.message;
+        throw new Error(message || "Invalid credentials", { cause: err });
     }
-
-    return normalizeUser(await res.json());
 }
 
 export async function logout() {
     try {
-        await fetch(`${API}/auth/logout`, {
-            method: "POST",
-            credentials: "include",
-        });
-    } catch {return false;
+        await api.post("/auth/logout");
+    } catch {
+        return false;
     }
 }
