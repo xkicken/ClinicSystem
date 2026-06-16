@@ -1,3 +1,4 @@
+djangorestframework-simplejwt
 djangorestframework
 dj-config-url
 asgiref==3.11.1
