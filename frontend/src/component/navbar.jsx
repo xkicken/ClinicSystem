@@ -10,7 +10,6 @@ const getNavLinks = (id) => ({
     { to: `/profile/${id}`, label: "Profile" },
     { to: "/user-dashboard", label: "Dashboard" },
     { to: "/calendar", label: "Calendar" },
-    { to: "/add-patient", label: "+ Add Patient", className: "text-success fw-bold" },
   ],
   Doctor: [
     { to: "/", label: "Home" },
@@ -23,7 +22,7 @@ const getNavLinks = (id) => ({
     { to: `/profile/${id}`, label: "Profile" },
     { to: "/admin-dashboard", label: "Dashboard" },
     { to: "/calendar", label: "Calendar" },
-    { to: "/add-doctor", label: "+ Add Doctor", className: "text-success fw-bold" },
+
   ],
 });
 
