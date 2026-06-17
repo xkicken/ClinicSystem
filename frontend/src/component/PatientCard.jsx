@@ -1,12 +1,13 @@
 import {useEffect, useState} from 'react'
 import api from '../services/axiosAPI'
+import {Link} from 'react-router-dom'
 
 export default function PatientCard({patient}) {
     const [next, setNext] = useState(null)
     const [loadingNext, setLoadingNext] = useState(true)
 
     useEffect(() => {
-        api.get(`/patients/${patient.id}/appointment/next/`)
+        api.get(`/patient/${patient.id}/appointment/next/`)
             .then(res => setNext(res.data.next_appointment))
             .catch(err => console.error('next appointment load failed', err))
             .finally(() => setLoadingNext(false))
@@ -26,9 +27,8 @@ export default function PatientCard({patient}) {
                     <div className="text-muted small">
                         Next appointment:
                         <p>
-                            Dr. {next.time_slot.doctor_name} — {next.time_slot.date} at {next.time_slot.start_time}
+                            Dr. {next.time_slot.doctor_name} — {next.time_slot.date} at {next.time_slot.start_time} <Link to={`/appointment/${next.id}`} className="btn btn-info btn-xs mb-1 rounded-pill">View</Link>
                         </p>
-                        <a href={`/appointment/${next.id}`}>View</a>
                     </div>
 
                 ) : (
@@ -40,9 +40,8 @@ export default function PatientCard({patient}) {
             </div>
             <div>
                 <div className="d-flex gap-2">
-                    <a href={`/booking?patient=${patient.id}`}
-                       className="btn btn-outline-primary btn-sm rounded-pill">Book</a>
-                    <a href={`/patient/${patient.id}`} className="btn btn-primary btn-sm rounded-pill">View</a>
+                    <Link to={`/booking?patient=${patient.id}`} className="btn btn-outline-primary btn-sm rounded-pill">Book</Link>
+                    <Link to={`/patient/${patient.id}`} className="btn btn-primary btn-sm rounded-pill">Patient Details</Link>
                 </div>
             </div>
         </div>

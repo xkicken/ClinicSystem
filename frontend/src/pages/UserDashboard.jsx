@@ -1,6 +1,7 @@
 import {useEffect, useState} from 'react'
 import api from '../services/axiosAPI'
 import PatientCard from '../component/PatientCard'
+import {Link} from "react-router-dom";
 
 export default function UserDashboard() {
     const [data, setdata] = useState([])
@@ -32,7 +33,7 @@ export default function UserDashboard() {
                 </div>
             </div>
             <div className="container pt-4 text-center">
-                <a href="/patient/add" className="text-success fw-bold">+ Add patient</a>
+                <Link to={"/patient/add"} className="text-success fw-bold">+ Add patient</Link>
             </div>
         </div>
     )

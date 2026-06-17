@@ -32,7 +32,15 @@ export function AuthProvider({ children }) {
         setUser(null);
     };
 
-    if (loading) return <div>Loading...</div>;
+    if (loading) {
+    return (
+        <div className="d-flex justify-content-center align-items-center vh-100 bg-body">
+            <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">Loading…</span>
+            </div>
+        </div>
+    );
+}
 
     return (
         <AuthContext.Provider value={{ user, login, logout, error }}>
