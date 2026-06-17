@@ -16,4 +16,6 @@ urlpatterns = [
     path('appointments/<int:id>/', views.AppointmentDetailView.as_view()),
     path('patients/', views.PatientListCreateView.as_view()),
     path('patients/<int:id>/', views.PatientDetailView.as_view()),
-    ]
+    path('profiles/<int:id>/', views.ProfileView.as_view()),
+    path('auth/change-password/', views.ChangePasswordView.as_view()),
+]

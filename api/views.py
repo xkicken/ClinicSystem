@@ -489,8 +489,36 @@ class ProfileView(APIView):
         profile, err = self._get_profile(id, request.user)
         if err:
             return err
+
+        user_data = request.data.get('user', {})
+        user = profile.user
+        for field in ('first_name', 'last_name', 'email'):
+            if field in user_data:
+                setattr(user, field, user_data[field])
+        user.save(update_fields=['first_name', 'last_name', 'email'])
+
         serializer = UserProfileSerializer(profile, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class ChangePasswordView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        old_password = request.data.get('old_password')
+        new_password = request.data.get('new_password')
+
+        if not old_password or not new_password:
+            return Response({'detail': 'Both current and new passwords are required.'},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        user = request.user
+        if not user.check_password(old_password):
+            return Response({'detail': 'Current password is incorrect.'},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        user.set_password(new_password)
+        user.save()
+        return Response({'detail': 'Password changed successfully.'})
