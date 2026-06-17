@@ -54,13 +54,14 @@ export default function NewAppointment() {
     }, [slots]);
 
     const dates = Object.keys(slotsByDate);
+    const todayKey = useMemo(() => toKey(new Date()), []);
 
     async function handleBook() {
         if (!selectedSlot) return;
         setError("");
         setSubmitting(true);
         try {
-            const res =await api.post("/appointments/", {
+            const res = await api.post("/appointments/", {
                 patient_id: Number(patientId),
                 time_slot_id: selectedSlot.id,
             });
@@ -110,41 +111,44 @@ export default function NewAppointment() {
 
             {dates.length > 0 && (
                 <>
-                    <div style={{maxHeight: 600, overflowY: "auto", overflowX: "auto"}}>
+                    <div style={{height: 700, overflowY: "auto", overflowX: "auto"}}>
                         <div className="d-flex gap-3 justify-content-center flex-nowrap">
-                            {dates.map(date => (
-                                <div key={date} className="card shadow-sm" style={{minWidth: 150}}>
-                                    <div className="card-header text-center fw-semibold"
-                                         style={{
-                                             position: "sticky",
-                                             top: 0,
-                                             zIndex: 2,
-                                             backgroundColor: "var(--bs-card-bg)",
-                                         }}>
-                                        {formatDate(date)}
-                                    </div>
-                                    <div className="card-body d-flex flex-column gap-2">
-                                        {slotsByDate[date].map(slot => {
-                                            if (slot.booked) {
+                            {dates.map(date => {
+                                const isToday = date === todayKey;
+                                return (
+                                    <div key={date}
+                                         className={`card shadow-sm ${isToday ? "border-primary border-2" : ""}`}
+                                         style={{minWidth: 170}}>
+                                        <div className={`card-header text-center fw-semibold ${isToday ? "text-bg-primary" : ""}`}
+                                             style={{
+                                                 position: "sticky", top: 0, zIndex: 2,
+                                                 backgroundColor: isToday ? undefined : "var(--bs-card-bg)",
+                                             }}>
+                                            {formatDate(date)}{isToday ? " • Today" : ""}
+                                        </div>
+                                        <div className="card-body d-flex flex-column gap-2">
+                                            {slotsByDate[date].map(slot => {
+                                                if (slot.booked) {
+                                                    return (
+                                                        <button key={slot.id} type="button"
+                                                                className="btn btn-sm btn-danger" disabled>
+                                                            {formatTime(slot.start_time)}
+                                                        </button>
+                                                    );
+                                                }
+                                                const active = selectedSlot?.id === slot.id;
                                                 return (
                                                     <button key={slot.id} type="button"
-                                                            className="btn btn-sm btn-danger" disabled>
+                                                            className={`btn btn-sm ${active ? "btn-primary" : "btn-outline-primary"}`}
+                                                            onClick={() => setSelectedSlot(slot)}>
                                                         {formatTime(slot.start_time)}
                                                     </button>
                                                 );
-                                            }
-                                            const active = selectedSlot?.id === slot.id;
-                                            return (
-                                                <button key={slot.id} type="button"
-                                                        className={`btn btn-sm ${active ? "btn-primary" : "btn-outline-primary"}`}
-                                                        onClick={() => setSelectedSlot(slot)}>
-                                                    {formatTime(slot.start_time)}
-                                                </button>
-                                            );
-                                        })}
+                                            })}
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
+                                );
+                            })}
                         </div>
                     </div>
 
@@ -153,7 +157,10 @@ export default function NewAppointment() {
                                 onClick={() => setPage(p => p - 1)} disabled={!pageInfo.has_previous}>
                             ‹ Previous
                         </button>
-                        <span className="text-muted small">Page {page + 1} of {pageInfo.page_count}</span>
+                        <button className="btn btn-outline-primary btn-sm"
+                                onClick={() => setPage(0)} disabled={page === 0}>
+                            Today
+                        </button>
                         <button className="btn btn-outline-secondary btn-sm"
                                 onClick={() => setPage(p => p + 1)} disabled={!pageInfo.has_next}>
                             Next ›
@@ -175,6 +182,13 @@ export default function NewAppointment() {
             )}
         </div>
     );
+}
+
+function toKey(d) {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${y}-${m}-${day}`;
 }
 
 function formatDate(dateStr) {
