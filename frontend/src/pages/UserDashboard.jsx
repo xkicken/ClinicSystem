@@ -22,7 +22,7 @@ export default function UserDashboard() {
                 <h2 className="fw-bold text-center">Patient Dashboard</h2>
                 <p className="text-muted text-center">Manage your patients and appointments</p>
             </div>
-            {data.length === 0 && <p>No patients added yet.</p>}
+            {data.length === 0 && <p className={"text-center"}>No patients added yet.</p>}
             <div className="container pb-2 d-flex justify-content-center">
                 <div className="card shadow-sm border-0 w-100" style={{maxWidth: '1000px'}}>
                     <div className="card-body">
