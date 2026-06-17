@@ -387,6 +387,7 @@ class CalendarView(APIView):
                     events.append({
                         'id': apt.id,
                         'title': f"{p.first_name} {p.last_name}",
+                        'status': apt.appointment_status,
                         'start': f"{apt.time_slot.date}T{apt.time_slot.start_time}",
                         'end': f"{apt.time_slot.date}T{apt.time_slot.end_time}",
                     })
