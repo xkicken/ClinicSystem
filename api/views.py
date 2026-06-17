@@ -250,7 +250,7 @@ class PatientDetailView(APIView):
 
 class TimeSlotListView(APIView):
     permission_classes = [IsAuthenticated]
-    DAYS_PER_PAGE = 4
+    DAYS_PER_PAGE = 5
 
     def get(self, request):
         qs = TimeSlot.objects.select_related('doctor', 'doctor__account').filter(date__gte=timezone.localtime().date())
@@ -387,6 +387,7 @@ class CalendarView(APIView):
                     events.append({
                         'id': apt.id,
                         'title': f"{p.first_name} {p.last_name}",
+                        'doctor': apt.time_slot.doctor.account.get_full_name(),
                         'status': apt.appointment_status,
                         'start': f"{apt.time_slot.date}T{apt.time_slot.start_time}",
                         'end': f"{apt.time_slot.date}T{apt.time_slot.end_time}",

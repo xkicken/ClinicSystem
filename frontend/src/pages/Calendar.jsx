@@ -30,7 +30,6 @@ export default function Calendar() {
 
     const todayKey = useMemo(() => toKey(new Date()), []);
 
-    // columns = days that have appointments, PLUS today (always), sorted
     const dates = useMemo(() => {
         const set = new Set(Object.keys(eventsByDate));
         set.add(todayKey);
@@ -39,7 +38,6 @@ export default function Calendar() {
 
     const todayIndex = dates.indexOf(todayKey);
 
-    // window centered on today at page 0; pages shift by DAYS_PER_PAGE
     const start = todayIndex - HALF + page * DAYS_PER_PAGE;
     const visibleDates = dates.slice(Math.max(0, start), Math.max(0, start) + DAYS_PER_PAGE);
     const hasPrev = start > 0;
@@ -52,7 +50,6 @@ export default function Calendar() {
         <div className="container py-4">
             <h3 className="text-center mb-4">My Calendar</h3>
 
-            {/* fixed height → pagination buttons never move */}
             <div style={{ height: 420, overflowY: "auto", overflowX: "auto" }}>
                 <div className="d-flex gap-3 justify-content-center flex-nowrap">
                     {visibleDates.map(key => {
@@ -84,6 +81,7 @@ export default function Calendar() {
                                                     <div className="small">
                                                         {ev.title}{cancelled ? " (Cancelled)" : ""}
                                                     </div>
+                                                    <div className="small text-muted">Dr. {ev.doctor}</div>
                                                 </Link>
                                             );
                                         })
