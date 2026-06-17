@@ -10,7 +10,10 @@
       "id": "47a9e438-6b00-4da6-bf9c-1c465c7b5a81",
       "request": {
         "method": "GET",
-        "header": []
+        "header": [],
+        "url": {
+          "raw": ""
+        }
       },
       "response": []
     },
@@ -70,6 +73,18 @@
             "user",
             ""
           ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "New Request",
+      "id": "41ef2cae-1f0b-4607-9682-3fb1bab80e7f",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": ""
         }
       },
       "response": []
