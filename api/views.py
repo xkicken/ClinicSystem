@@ -85,7 +85,7 @@ class RefreshView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
-        token = request.COOKIES.get("refresh")
+        token = request.COOKIES.get("refresh_token")
         if not token:
             return Response({"detail": "No refresh token."}, status=status.HTTP_401_UNAUTHORIZED)
         try:
@@ -101,9 +101,9 @@ class SpecialtyListView(APIView):
 
     def get(self, request):
         specialties = Specialty.objects.all()
-        return Response({
+        return Response(
             SpecialtySerializer(specialties, many=True).data
-        })
+        )
 
 
 class DoctorListView(APIView):
@@ -111,9 +111,9 @@ class DoctorListView(APIView):
 
     def get(self, request):
         doctors = Doctor.objects.select_related('specialty', 'account').all()
-        return Response({
+        return Response(
             DoctorSerializer(doctors, many=True).data
-        })
+        )
 
 
 class AddDoctorView(APIView):
@@ -237,16 +237,36 @@ class PatientDetailView(APIView):
 
 class TimeSlotListView(APIView):
     permission_classes = [IsAuthenticated]
+    DAYS_PER_PAGE = 4
 
     def get(self, request):
-        qs = TimeSlot.objects.all()
+        qs = TimeSlot.objects.select_related('doctor', 'doctor__account').filter(date__gte=timezone.localtime().date())
+
         doctor_id = request.query_params.get('doctor')
         booked = request.query_params.get('booked')
         if doctor_id:
             qs = qs.filter(doctor_id=doctor_id)
         if booked is not None:
             qs = qs.filter(booked=booked.lower() == 'true')
-        return Response(TimeSlotSerializer(qs, many=True).data)
+
+        try:
+            page = max(0, int(request.query_params.get('page', 0)))
+        except (TypeError, ValueError):
+            page = 0
+
+        dates = list(qs.values_list('date', flat=True).distinct().order_by('date'))
+        page_count = (len(dates) + self.DAYS_PER_PAGE - 1) // self.DAYS_PER_PAGE
+
+        page_dates = dates[page * self.DAYS_PER_PAGE:(page + 1) * self.DAYS_PER_PAGE]
+        page_qs = qs.filter(date__in=page_dates).order_by('date', 'start_time')
+
+        return Response({
+            'results': TimeSlotSerializer(page_qs, many=True).data,
+            'page': page,
+            'page_count': page_count,
+            'has_next': page < page_count - 1,
+            'has_previous': page > 0,
+        })
 
 class AppointmentListCreateView(APIView):
     permission_classes = [IsAuthenticated]
@@ -273,18 +293,23 @@ class AppointmentListCreateView(APIView):
 
     def post(self, request):
         serializer = AppointmentSerializer(data=request.data)
-        if serializer.is_valid():
-            patient = serializer.validated_data['patient']
-            if patient.account != request.user:
-                return Response({'detail': 'Forbidden.'}, status=status.HTTP_403_FORBIDDEN)
-            appointment, created = Appointment.objects.get_or_create(
-                time_slot=serializer.validated_data['time_slot'],
-                patient=patient,
-            )
-            if created:
-                TimeSlot.objects.filter(id=appointment.time_slot.id).update(booked=True)
-            return Response(AppointmentSerializer(appointment).data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
+
+        patient = serializer.validated_data['patient']
+        time_slot = serializer.validated_data['time_slot']
+
+        if patient.account != request.user and not request.user.groups.filter(name='Admin').exists():
+            return Response({'detail': 'Forbidden.'}, status=status.HTTP_403_FORBIDDEN)
+
+        if time_slot.booked or Appointment.objects.filter(time_slot=time_slot).exists():
+            return Response({'detail': 'This time slot is no longer available.'},
+                            status=status.HTTP_409_CONFLICT)
+
+        appointment = Appointment.objects.create(patient=patient, time_slot=time_slot)
+        time_slot.booked = True
+        time_slot.save(update_fields=['booked'])
+
+        return Response(AppointmentSerializer(appointment).data, status=status.HTTP_201_CREATED)
 
 
 class AppointmentDetailView(APIView):

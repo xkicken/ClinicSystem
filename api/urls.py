@@ -8,5 +8,9 @@ urlpatterns = [
     path('auth/refresh', views.RefreshView.as_view()),
     path('auth/me/', views.MeView.as_view()),
     path('dashboard/user/', views.UserDashboardView.as_view()),
-    path('patient/<int:id>/appointment/next/', views.PatientNextAppointmentView.as_view())
-]
+    path('patient/<int:id>/appointment/next/', views.PatientNextAppointmentView.as_view()),
+    path('appointments/', views.AppointmentListCreateView.as_view()),
+    path('doctors/', views.DoctorListView.as_view()),
+    path('timeslots/', views.TimeSlotListView.as_view()),
+    path('calendar/', views.CalendarView.as_view()),
+    ]
