@@ -26,7 +26,7 @@ export default function PatientCard({patient}) {
                 ) : next ? (
                     <div className="text-muted small">
                         Next appointment:
-                        <p>
+                        <p className={"mb-0"}>
                             Dr. {next.time_slot.doctor_name} — {next.time_slot.date} at {next.time_slot.start_time} <Link to={`/appointment/${next.id}`} className="btn btn-info btn-xs mb-1 rounded-pill">View</Link>
                         </p>
                     </div>

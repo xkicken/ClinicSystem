@@ -7,7 +7,8 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError
 from django.contrib.auth import authenticate
-from django.conf import settings
+from django.shortcuts import get_object_or_404
+from django.db import IntegrityError
 
 from .serializers import *
 
@@ -197,17 +198,23 @@ class PatientListCreateView(APIView):
 
     def post(self, request):
         serializer = PatientSerializer(data=request.data)
-        if serializer.is_valid():
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
             serializer.save(account=request.user)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except IntegrityError:
+            return Response(
+                {'detail': 'A patient with these details already exists.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class PatientDetailView(APIView):
     permission_classes = [IsAuthenticated]
 
     def _get_patient(self, id, user):
-        patient = Patient.objects.get(id=id)
+        patient = get_object_or_404(Patient, id=id)
         if patient.account != user and not user.groups.filter(name='Admin').exists():
             return None, Response({'detail': 'Forbidden.'}, status=status.HTTP_403_FORBIDDEN)
         return patient, None
@@ -223,10 +230,16 @@ class PatientDetailView(APIView):
         if err:
             return err
         serializer = PatientSerializer(patient, data=request.data, partial=True)
-        if serializer.is_valid():
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
             serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except IntegrityError:
+            return Response(
+                {'detail': 'A patient with these details already exists.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        return Response(serializer.data)
 
     def delete(self, request, id):
         patient, err = self._get_patient(id, request.user)

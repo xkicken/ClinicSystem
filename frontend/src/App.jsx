@@ -6,6 +6,8 @@ import Login from "./pages/Login";
 import UserDashboard from "./pages/UserDashboard";
 import NewAppointment from "./pages/NewAppointment";
 import AppointmentDetails from "./pages/AppointmentDetails";
+import PatientDetail from "./pages/PatientDetail";
+
 
 function App() {
     return (
@@ -25,8 +27,8 @@ function AppContent() {
             <Navbar
                 group={user?.group || "guest"}
                 id={user?.id}
-                firstName = {user?.firstName}
-                lastName = {user?.lastName}
+                firstName={user?.firstName}
+                lastName={user?.lastName}
                 isAuthenticated={!!user}
                 onLogout={logout}
             />
@@ -35,6 +37,8 @@ function AppContent() {
                 <Route path="/login" element={<Login/>}/>
                 <Route path="/booking" element={<NewAppointment/>}/>
                 <Route path="/appointment/:id" element={<AppointmentDetails/>}/>
+                <Route path="/patient/add" element={<PatientDetail/>}/>
+                <Route path="/patient/:id" element={<PatientDetail/>}/>
             </Routes>
         </>
     );
