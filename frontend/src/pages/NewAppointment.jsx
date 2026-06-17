@@ -60,11 +60,11 @@ export default function NewAppointment() {
         setError("");
         setSubmitting(true);
         try {
-            await api.post("/appointments/", {
+            const res =await api.post("/appointments/", {
                 patient_id: Number(patientId),
                 time_slot_id: selectedSlot.id,
             });
-            navigate("/dashboard");
+            navigate("/booking/confirm", { state: { appointment: res.data } });
         } catch (err) {
             setError(err.response?.data?.detail || "Could not book the appointment.");
         } finally {
