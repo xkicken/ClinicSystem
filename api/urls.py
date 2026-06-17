@@ -8,4 +8,5 @@ urlpatterns = [
     path('auth/refresh', views.RefreshView.as_view()),
     path('auth/me/', views.MeView.as_view()),
     path('dashboard/user/', views.UserDashboardView.as_view()),
+    path('patient/<int:id>/appointment/next/', views.PatientNextAppointmentView.as_view())
 ]

@@ -354,22 +354,39 @@ class CalendarView(APIView):
 class UserDashboardView(APIView):
     permission_classes = [IsAuthenticated]
 
+    def _get_patient(self, user):
+        patient = Patient.objects.get(id=id)
+        if patient.account != user and not user.groups.filter(name='Admin').exists():
+            return None, Response({'detail': 'Forbidden.'}, status=status.HTTP_403_FORBIDDEN)
+        return patient, None
+
     def get(self, request):
         patients = Patient.objects.filter(account=request.user)
-        data = []
-        for p in patients:
-            next_appointment = (
-                Appointment.objects
-                .select_related('time_slot', 'time_slot__doctor')
-                .filter(patient=p, time_slot__date__gte=timezone.localtime().date())
-                .order_by('time_slot__date', 'time_slot__start_time')
-                .first()
-            )
-            data.append({
-                'patient': PatientSerializer(p).data,
-                'next_appointment': AppointmentSerializer(next_appointment).data if next_appointment else None,
-            })
-        return Response(data)
+        return Response(PatientSerializer(patients, many=True).data)
+
+class PatientNextAppointmentView(APIView):
+    permission_classes = [IsAuthenticated]
+    def _get_patient(self, id, user):
+        patient = Patient.objects.get(id=id)
+        if patient.account != user and not user.group.filter(name='admin').exists():
+            return None, Response({'detail': 'Forbidden.'}, status=status.HTTP_403_FORBIDDEN)
+        return patient, None
+
+    def get(self, request, id):
+        patient, err  = self._get_patient(id,request.user)
+        if err:
+            return err
+
+        next_appointment = (
+            Appointment.objects
+            .select_related('time_slot', 'time_slot__doctor', 'time_slot__doctor__account')
+            .filter(patient=patient,appointment_status='BOOKED', time_slot__date__gte=timezone.localtime().date())
+            .order_by('time_slot__date', 'time_slot__start_time')
+            .first()
+        )
+        if next_appointment is None:
+            return Response({'next_appointment': None})
+        return Response({'next_appointment': AppointmentSerializer(next_appointment).data})
 
 
 class DoctorDashboardView(APIView):

@@ -46,9 +46,15 @@ class PatientSerializer(serializers.ModelSerializer):
 
 
 class TimeSlotSerializer(serializers.ModelSerializer):
+    doctor_name = serializers.SerializerMethodField()
+
     class Meta:
         model = TimeSlot
-        fields = ['id', 'doctor', 'date', 'start_time', 'end_time', 'booked']
+        fields = ['id', 'doctor','doctor_name', 'date', 'start_time', 'end_time', 'booked']
+
+    def get_doctor_name(self, obj):
+        account = obj.doctor.account
+        return f"{account.first_name} {account.last_name}"
 
 
 class AppointmentSerializer(serializers.ModelSerializer):
