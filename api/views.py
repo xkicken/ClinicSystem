@@ -317,7 +317,7 @@ class AppointmentDetailView(APIView):
 
     def _get_appointment(self, id, user):
         appointment = Appointment.objects.select_related(
-            'patient', 'time_slot', 'time_slot__doctor'
+            'patient', 'time_slot', 'time_slot__doctor', 'time_slot__doctor__account'
         ).get(id=id)
         is_patient_owner = appointment.patient.account == user
         is_doctor = appointment.time_slot.doctor.account == user
@@ -336,11 +336,16 @@ class AppointmentDetailView(APIView):
         appointment, err = self._get_appointment(id, request.user)
         if err:
             return err
+
         serializer = AppointmentSerializer(appointment, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
+        appointment = serializer.save()
+
+        if appointment.appointment_status == 'CANCELLED' and appointment.time_slot.booked:
+            appointment.time_slot.booked = False
+            appointment.time_slot.save(update_fields=['booked'])
+
+        return Response(AppointmentSerializer(appointment).data)
 
 
 class CalendarView(APIView):
