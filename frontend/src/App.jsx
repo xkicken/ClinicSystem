@@ -4,6 +4,8 @@ import {useAuth} from "./context/useAuth.js";
 import Navbar from "./component/Navbar";
 import Login from "./pages/Login";
 import UserDashboard from "./pages/UserDashboard";
+import NewAppointment from "./pages/NewAppointment";
+import AppointmentDetails from "./pages/AppointmentDetails";
 
 function App() {
     return (
@@ -29,8 +31,10 @@ function AppContent() {
                 onLogout={logout}
             />
             <Routes>
-                <Route path="/dashboard" element={<UserDashboard/>}/>
+                <Route path="/userdashboard" element={<UserDashboard/>}/>
                 <Route path="/login" element={<Login/>}/>
+                <Route path="/booking" element={<NewAppointment/>}/>
+                <Route path="/appointment/:id" element={<AppointmentDetails/>}/>
             </Routes>
         </>
     );
