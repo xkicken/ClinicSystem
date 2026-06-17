@@ -1,0 +1,6 @@
+.btn-xs {
+  --bs-btn-padding-y: 0.15rem;
+  --bs-btn-padding-x: 0.4rem;
+  --bs-btn-font-size: 0.7rem;
+  --bs-btn-border-radius: 0.2rem;
+}
