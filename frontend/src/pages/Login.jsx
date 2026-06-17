@@ -3,6 +3,14 @@ import {Link} from "react-router-dom";
 import {useNavigate} from "react-router-dom";
 import {useAuth} from "../context/useAuth.js";
 
+function dashboardPath(group) {
+    switch (group) {
+        case "Doctor": return "/doctor-dashboard";
+        case "Admin":  return "/admin-dashboard";
+        default:       return "/user-dashboard";
+    }
+}
+
 export default function Login() {
     const [credentials, setCredentials] = useState({username: "", password: ""});
     const [error, setError] = useState("");
@@ -21,10 +29,10 @@ export default function Login() {
         setError("");
 
         try {
-            await login(credentials.username, credentials.password);
-            navigate("/userdashboard");
+            const user = await login(credentials.username, credentials.password);
+            navigate(dashboardPath(user?.group));
         } catch {
-            setError("Something went wrong. Please try again.");
+            setError("Invalid username or password");
         }
     }
 

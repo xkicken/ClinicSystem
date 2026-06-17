@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
-import { checkAuth, login as loginService, logout as logoutService } from "../services/authService";
-import { AuthContext } from "./authContextObject.js"
+import {useState, useEffect} from "react";
+import {checkAuth, login as loginService, logout as logoutService} from "../services/authService";
+import {AuthContext} from "./authContextObject.js"
 
-export function AuthProvider({ children }) {
+export function AuthProvider({children}) {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -17,10 +17,9 @@ export function AuthProvider({ children }) {
         setError(null);
         try {
             await loginService(username, password);
-
             const userData = await checkAuth();
-
             setUser(userData);
+            return userData;
         } catch (err) {
             setError(err.message);
             throw err;
@@ -33,17 +32,17 @@ export function AuthProvider({ children }) {
     };
 
     if (loading) {
-    return (
-        <div className="d-flex justify-content-center align-items-center vh-100 bg-body">
-            <div className="spinner-border text-primary" role="status">
-                <span className="visually-hidden">Loading…</span>
+        return (
+            <div className="d-flex justify-content-center align-items-center vh-100 bg-body">
+                <div className="spinner-border text-primary" role="status">
+                    <span className="visually-hidden">Loading…</span>
+                </div>
             </div>
-        </div>
-    );
-}
+        );
+    }
 
     return (
-        <AuthContext.Provider value={{ user, login, logout, error }}>
+        <AuthContext.Provider value={{user, login, logout, error}}>
             {children}
         </AuthContext.Provider>
     );

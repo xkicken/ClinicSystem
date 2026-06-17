@@ -35,7 +35,9 @@ function AppContent() {
                 onLogout={logout}
             />
             <Routes>
-                <Route path="/userdashboard" element={<UserDashboard/>}/>
+                <Route path="/user-dashboard" element={<UserDashboard/>}/>
+                {/*<Route path="/doctor-dashboard" element={<DoctorDashboard/>}/>*/}
+                {/*<Route path="/admin-dashboard"  element={<AdminDashboard/>}/>*/}
                 <Route path="/login" element={<Login/>}/>
                 <Route path="/booking" element={<NewAppointment/>}/>
                 <Route path="/appointment/:id" element={<AppointmentDetails/>}/>
