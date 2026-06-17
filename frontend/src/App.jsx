@@ -9,7 +9,7 @@ import AppointmentDetails from "./pages/AppointmentDetails";
 import PatientDetail from "./pages/PatientDetail";
 import Profile from "./pages/Profile";
 import Calendar from "./pages/Calendar";
-
+import BookingConfirm from "./pages/BookingConfirm"
 
 function App() {
     return (
@@ -43,6 +43,7 @@ function AppContent() {
                 <Route path="/patient/:id" element={<PatientDetail/>}/>
                 <Route path="/profile/:id" element={<Profile/>}/>
                 <Route path="/calendar" element={<Calendar/>}/>
+                <Route path="/booking/confirm" element={<BookingConfirm/>}/>
             </Routes>
         </>
     );
