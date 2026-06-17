@@ -4,7 +4,7 @@ export default function BookingConfirm() {
     const { state } = useLocation();
     const appointment = state?.appointment;
 
-    if (!appointment) return <Navigate to="/userdashboard" replace />;
+    if (!appointment) return <Navigate to="/user-dashboard" replace />;
 
     const { id, patient, time_slot } = appointment;
 
@@ -34,7 +34,7 @@ export default function BookingConfirm() {
                     <Link to={`/appointment/${id}`} className="btn btn-outline-primary">
                         View appointment
                     </Link>
-                    <Link to="/userdashboard" className="btn btn-primary">
+                    <Link to="/user-dashboard" className="btn btn-primary">
                         Back to dashboard
                     </Link>
                 </div>

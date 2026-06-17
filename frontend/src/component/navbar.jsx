@@ -8,19 +8,19 @@ const getNavLinks = (id) => ({
   User: [
     { to: "/", label: "Home" },
     { to: `/profile/${id}`, label: "Profile" },
-    { to: "/userdashboard", label: "Dashboard" },
+    { to: "/user-dashboard", label: "Dashboard" },
     { to: "/calendar", label: "Calendar" },
   ],
   Doctor: [
     { to: "/", label: "Home" },
     { to: `/profile/${id}`, label: "Profile" },
-    { to: "/doctordashboard", label: "Dashboard" },
+    { to: "/doctor-dashboard", label: "Dashboard" },
     { to: "/calendar", label: "Calendar" },
   ],
   Admin: [
     { to: "/", label: "Home" },
     { to: `/profile/${id}`, label: "Profile" },
-    { to: "/admindashboard", label: "Dashboard" },
+    { to: "/admin-dashboard", label: "Dashboard" },
     { to: "/calendar", label: "Calendar" },
 
   ],

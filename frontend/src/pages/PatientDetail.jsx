@@ -36,7 +36,7 @@ export default function PatientDetail() {
         try {
             if (isNew) await api.post("/patients/", form);
             else await api.patch(`/patients/${id}/`, form);
-            navigate("/userdashboard");
+            navigate("/user-dashboard");
         } catch (err) {
             setError(err.response?.data ? JSON.stringify(err.response.data) : "Could not save.");
         } finally {
@@ -49,7 +49,7 @@ export default function PatientDetail() {
         setSaving(true);
         try {
             await api.delete(`/patients/${id}/`);
-            navigate("/userdashboard");
+            navigate("/user-dashboard");
         } catch {
             setError("Could not delete.");
             setSaving(false);
