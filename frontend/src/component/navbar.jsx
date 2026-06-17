@@ -30,7 +30,7 @@ function Navbar({ id, group, firstName, lastName, isAuthenticated, onLogout }) {
   const links = getNavLinks(id)[group] || getNavLinks(id).guest;
 
   return (
-    <nav className="navbar navbar-expand-lg">
+    <nav className="navbar navbar-expand-lg bg-body-tertiary">
       <div className="container-fluid">
 
         <NavLink className="navbar-brand" to="/">Clinic System</NavLink>
