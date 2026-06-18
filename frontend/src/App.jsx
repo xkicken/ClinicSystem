@@ -10,6 +10,7 @@ import PatientDetail from "./pages/PatientDetail";
 import Profile from "./pages/Profile";
 import Calendar from "./pages/Calendar";
 import BookingConfirm from "./pages/BookingConfirm"
+import DoctorDashboard from "./pages/DoctorDashboard";
 
 function App() {
     return (
@@ -36,7 +37,7 @@ function AppContent() {
             />
             <Routes>
                 <Route path="/user-dashboard" element={<UserDashboard/>}/>
-                {/*<Route path="/doctor-dashboard" element={<DoctorDashboard/>}/>*/}
+                <Route path="/doctor-dashboard" element={<DoctorDashboard/>}/>
                 {/*<Route path="/admin-dashboard"  element={<AdminDashboard/>}/>*/}
                 <Route path="/login" element={<Login/>}/>
                 <Route path="/booking" element={<NewAppointment/>}/>
@@ -46,6 +47,7 @@ function AppContent() {
                 <Route path="/profile/:id" element={<Profile/>}/>
                 <Route path="/calendar" element={<Calendar/>}/>
                 <Route path="/booking/confirm" element={<BookingConfirm/>}/>
+                <Route path="/doctor-dashboard" element={<DoctorDashboard/>}/>
             </Routes>
         </>
     );

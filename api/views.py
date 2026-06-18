@@ -441,12 +441,12 @@ class DoctorDashboardView(APIView):
         if not request.user.groups.filter(name='Doctor').exists():
             return Response({'detail': 'Forbidden.'}, status=status.HTTP_403_FORBIDDEN)
         appointments = Appointment.objects.select_related(
-            'patient', 'time_slot', 'time_slot__doctor'
+            'patient', 'time_slot', 'time_slot__doctor', 'time_slot__doctor__account'
         ).filter(
             time_slot__doctor__account=request.user,
             appointment_status='BOOKED',
             time_slot__date=timezone.localtime().date()
-        )
+        ).order_by('time_slot__start_time')
         return Response(AppointmentSerializer(appointments, many=True).data)
 
 

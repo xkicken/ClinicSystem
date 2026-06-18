@@ -18,4 +18,5 @@ urlpatterns = [
     path('patients/<int:id>/', views.PatientDetailView.as_view()),
     path('profiles/<int:id>/', views.ProfileView.as_view()),
     path('auth/change-password/', views.ChangePasswordView.as_view()),
+    path('dashboard/doctor/', views.DoctorDashboardView.as_view()),
 ]
