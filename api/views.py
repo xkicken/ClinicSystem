@@ -524,3 +524,12 @@ class ChangePasswordView(APIView):
         user.set_password(new_password)
         user.save()
         return Response({'detail': 'Password changed successfully.'})
+
+class LogoutView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        response = Response({"detail": "Logged out."})
+        response.delete_cookie("access_token")
+        response.delete_cookie("refresh_token")
+        return response
