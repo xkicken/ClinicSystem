@@ -15,6 +15,7 @@ import Register from "./pages/Register";
 import Home from "./pages/Home";
 import AdminDoctor from "./pages/AdminDoctor";
 import AdminUser from "./pages/AdminUser";
+import {useNavigate} from "react-router-dom";
 
 function App() {
     return (
@@ -28,6 +29,12 @@ function App() {
 
 function AppContent() {
     const {user, logout} = useAuth();
+    const navigate = useNavigate();
+
+    async function handleLogout() {
+        await logout();
+        navigate("/home");
+    }
 
     return (
         <>
@@ -37,13 +44,12 @@ function AppContent() {
                 firstName={user?.firstName}
                 lastName={user?.lastName}
                 isAuthenticated={!!user}
-                onLogout={logout}
+                onLogout={handleLogout}
             />
             <Routes>
                 <Route path="/" element={<Home/>}/>
                 <Route path="/dashboard/user" element={<UserDashboard/>}/>
                 <Route path="/dashboard/doctor" element={<DoctorDashboard/>}/>
-                {/*<Route path="/admin-dashboard"  element={<AdminDashboard/>}/>*/}
                 <Route path="/login" element={<Login/>}/>
                 <Route path="/booking" element={<NewAppointment/>}/>
                 <Route path="/appointment/:id" element={<AppointmentDetails/>}/>
