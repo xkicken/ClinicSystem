@@ -16,6 +16,7 @@ import Home from "./pages/Home";
 import AdminDoctor from "./pages/AdminDoctor";
 import AdminUser from "./pages/AdminUser";
 import {useNavigate} from "react-router-dom";
+import ProtectedRoute from "./component/ProtectedRoute.jsx";
 
 function App() {
     return (
@@ -48,19 +49,31 @@ function AppContent() {
             />
             <Routes>
                 <Route path="/" element={<Home/>}/>
-                <Route path="/dashboard/user" element={<UserDashboard/>}/>
-                <Route path="/dashboard/doctor" element={<DoctorDashboard/>}/>
                 <Route path="/login" element={<Login/>}/>
-                <Route path="/booking" element={<NewAppointment/>}/>
-                <Route path="/appointment/:id" element={<AppointmentDetails/>}/>
-                <Route path="/patient/add" element={<PatientDetail/>}/>
-                <Route path="/patient/:id" element={<PatientDetail/>}/>
-                <Route path="/profile/:id" element={<Profile/>}/>
-                <Route path="/calendar" element={<Calendar/>}/>
-                <Route path="/booking/confirm" element={<BookingConfirm/>}/>
                 <Route path="/register" element={<Register/>}/>
-                <Route path="/admin/doctor" element={<AdminDoctor/>}/>
-                <Route path="/admin/users" element={<AdminUser/>}/>
+
+                <Route element={<ProtectedRoute/>}>
+                    <Route path="/booking" element={<NewAppointment/>}/>
+                    <Route path="/booking/confirm" element={<BookingConfirm/>}/>
+                    <Route path="/appointment/:id" element={<AppointmentDetails/>}/>
+                    <Route path="/patient/add" element={<PatientDetail/>}/>
+                    <Route path="/patient/:id" element={<PatientDetail/>}/>
+                    <Route path="/profile/:id" element={<Profile/>}/>
+                    <Route path="/calendar" element={<Calendar/>}/>
+                </Route>
+
+                <Route element={<ProtectedRoute roles={["User"]}/>}>
+                    <Route path="/dashboard/user" element={<UserDashboard/>}/>
+                </Route>
+                <Route element={<ProtectedRoute roles={["Doctor"]}/>}>
+                    <Route path="/dashboard/doctor" element={<DoctorDashboard/>}/>
+                </Route>
+
+                <Route element={<ProtectedRoute roles={["Doctor"]}/>}>
+                    <Route path="/admin/doctor" element={<AdminDoctor/>}/>
+                    <Route path="/admin/users" element={<AdminUser/>}/>
+                </Route>
+
             </Routes>
         </>
     );
