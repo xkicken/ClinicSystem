@@ -117,7 +117,7 @@ class DoctorListView(APIView):
         )
 
 
-class AddDoctorView(APIView):
+class AdminAddDoctorView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
@@ -157,6 +157,99 @@ class AddDoctorView(APIView):
         return Response({
             'detail': 'Doctor created.'
         }, status=status.HTTP_201_CREATED)
+
+class AdminUserListView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        if not request.user.groups.filter(name='Admin').exists():
+            return Response({'detail': 'Forbidden.'}, status=status.HTTP_403_FORBIDDEN)
+        users = User.objects.prefetch_related('patients').filter(groups__name='User')
+        return Response([
+            {
+                'user': UserSerializer(u).data,
+                'is_active': u.is_active,
+                'patients': PatientSerializer(u.patients.all(), many=True).data,
+            }
+            for u in users
+        ])
+    def post(self, request):
+        if not request.user.groups.filter(name='Admin').exists():
+            return Response({'detail': 'Forbidden.'}, status=status.HTTP_403_FORBIDDEN)
+        serializer = RegisterSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        user = serializer.save()
+        group, _ = Group.objects.get_or_create(name='User')
+        user.groups.add(group)
+        UserProfile.objects.create(user=user)
+        return Response(UserSerializer(user).data, status=status.HTTP_201_CREATED)
+
+class AdminUserPatientsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, id):
+        if not request.user.groups.filter(name='Admin').exists():
+            return Response({'detail': 'Forbidden.'}, status=status.HTTP_403_FORBIDDEN)
+        target = get_object_or_404(User, id=id)
+        serializer = PatientSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            serializer.save(account=target)            # attach to the chosen user, not the admin
+        except IntegrityError:
+            return Response({'detail': 'A patient with these details already exists.'},
+                            status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class AdminUserDetailView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def _guard(self, request, id):
+        if not request.user.groups.filter(name='Admin').exists():
+            return None, Response({'detail': 'Forbidden.'}, status=status.HTTP_403_FORBIDDEN)
+        target = get_object_or_404(User, id=id)
+        if target == request.user:
+            return None, Response({'detail': 'You cannot modify your own account here.'},
+                                  status=status.HTTP_400_BAD_REQUEST)
+        return target, None
+
+    def patch(self, request, id):
+        target, err = self._guard(request, id)
+        if err:
+            return err
+
+        editable = ['first_name', 'last_name', 'email', 'username', 'is_active']
+        updated = []
+        for field in editable:
+            if field in request.data:
+                value = bool(request.data[field]) if field == 'is_active' else request.data[field]
+                setattr(target, field, value)
+                updated.append(field)
+
+        if updated:
+            try:
+                target.save(update_fields=updated)
+            except IntegrityError:
+                return Response({'detail': 'That username is already taken.'},
+                                status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({
+            'id': target.id,
+            'username': target.username,
+            'first_name': target.first_name,
+            'last_name': target.last_name,
+            'email': target.email,
+            'is_active': target.is_active,
+        })
+
+    def delete(self, request, id):
+        target, err = self._guard(request, id)
+        if err:
+            return err
+        target.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class DoctorDetailView(APIView):
@@ -448,29 +541,6 @@ class DoctorDashboardView(APIView):
             time_slot__date=timezone.localtime().date()
         ).order_by('time_slot__start_time')
         return Response(AppointmentSerializer(appointments, many=True).data)
-
-
-class AdminDashboardView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request):
-        if not request.user.groups.filter(name='Admin').exists():
-            return Response({'detail': 'Forbidden.'}, status=status.HTTP_403_FORBIDDEN)
-
-        doctors = Doctor.objects.select_related('account', 'specialty').all()
-        users = User.objects.prefetch_related('patients').filter(groups__name='User')
-
-        return Response({
-            'doctors': DoctorSerializer(doctors, many=True).data,
-            'users': [
-                {
-                    'user': UserSerializer(u).data,
-                    'patients': PatientSerializer(u.patients.all(), many=True).data,
-                }
-                for u in users
-            ],
-        })
-
 
 class ProfileView(APIView):
     permission_classes = [IsAuthenticated]

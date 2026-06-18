@@ -14,6 +14,7 @@ import DoctorDashboard from "./pages/DoctorDashboard";
 import Register from "./pages/Register";
 import Home from "./pages/Home";
 import AdminDoctor from "./pages/AdminDoctor";
+import AdminUser from "./pages/AdminUser";
 
 function App() {
     return (
@@ -54,6 +55,8 @@ function AppContent() {
                 <Route path="/doctor-dashboard" element={<DoctorDashboard/>}/>
                 <Route path="/register" element={<Register/>}/>
                 <Route path="/admin-doctor" element={<AdminDoctor/>}/>
+                <Route path="/admin/doctor" element={<AdminDoctor/>}/>
+                <Route path="/admin/users" element={<AdminUser/>}/>
             </Routes>
         </>
     );
