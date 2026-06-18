@@ -50,7 +50,7 @@ class TimeSlotSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TimeSlot
-        fields = ['id', 'doctor','doctor_name', 'date', 'start_time', 'end_time', 'booked']
+        fields = ['id', 'doctor','doctor_name', 'date', 'start_time', 'end_time', 'booked', 'is_available']
 
     def get_doctor_name(self, obj):
         account = obj.doctor.account

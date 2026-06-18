@@ -7,7 +7,7 @@ const getNavLinks = (id) => ({
     ],
     User: [
         {to: "/", label: "Home"},
-        {to: "/profile/${id}", label: "Profile"},
+        {to: `/profile/${id}`, label: "Profile"},
         {to: "/dashboard/user", label: "Dashboard"},
         {to: "/calendar", label: "Calendar"},
     ],
@@ -19,9 +19,10 @@ const getNavLinks = (id) => ({
     ],
     Admin: [
         {to: "/", label: "Home"},
-        {to: "/profile/${id}", label: "Profile"},
+        {to: `/profile/${id}`, label: "Profile"},
         {to: "/admin/doctor", label: "Doctor"},
         {to: "/admin/users", label: "Users"},
+        {to: "/admin/timeslots", label: "Timeslots"}
     ],
 });
 

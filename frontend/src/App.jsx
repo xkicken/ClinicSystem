@@ -17,6 +17,7 @@ import AdminDoctor from "./pages/AdminDoctor";
 import AdminUser from "./pages/AdminUser";
 import {useNavigate} from "react-router-dom";
 import ProtectedRoute from "./component/ProtectedRoute.jsx";
+import AdminTimeSlots from "./pages/AdminTimeSlots";
 
 function App() {
     return (
@@ -69,9 +70,10 @@ function AppContent() {
                     <Route path="/dashboard/doctor" element={<DoctorDashboard/>}/>
                 </Route>
 
-                <Route element={<ProtectedRoute roles={["Doctor"]}/>}>
+                <Route element={<ProtectedRoute roles={["Admin"]}/>}>
                     <Route path="/admin/doctor" element={<AdminDoctor/>}/>
                     <Route path="/admin/users" element={<AdminUser/>}/>
+                    <Route path="/admin/timeslots" element={<AdminTimeSlots/>}/>
                 </Route>
 
             </Routes>

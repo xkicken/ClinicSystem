@@ -56,6 +56,7 @@ class TimeSlot(models.Model):
     start_time = models.TimeField()
     end_time = models.TimeField()
     booked = models.BooleanField(default=False)
+    is_available = models.BooleanField(default=True)
 
     def __str__(self):
         return f"{self.doctor} - {self.date} {self.start_time}"

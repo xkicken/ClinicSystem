@@ -9,6 +9,8 @@ from rest_framework_simplejwt.exceptions import TokenError
 from django.contrib.auth import authenticate
 from django.shortcuts import get_object_or_404
 from django.db import IntegrityError
+from django.core.management import call_command
+from io import StringIO
 
 from .serializers import *
 
@@ -196,7 +198,7 @@ class AdminUserPatientsView(APIView):
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         try:
-            serializer.save(account=target)            # attach to the chosen user, not the admin
+            serializer.save(account=target)
         except IntegrityError:
             return Response({'detail': 'A patient with these details already exists.'},
                             status=status.HTTP_400_BAD_REQUEST)
@@ -373,6 +375,54 @@ class TimeSlotListView(APIView):
             'has_next': page < page_count - 1,
             'has_previous': page > 0,
         })
+    def post(self, request):
+        if not request.user.groups.filter(name='Admin').exists():
+            return Response({'detail': 'Forbidden.'}, status=status.HTTP_403_FORBIDDEN)
+        serializer = TimeSlotSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+class TimeSlotDetailView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def _admin(self, request):
+        return request.user.groups.filter(name='Admin').exists()
+
+    def get(self, request, id):
+        if not self._admin(request):
+            return Response({'detail': 'Forbidden.'}, status=status.HTTP_403_FORBIDDEN)
+        slot = get_object_or_404(
+            TimeSlot.objects.select_related('doctor', 'doctor__account'), id=id)
+        data = TimeSlotSerializer(slot).data
+        appt = (Appointment.objects
+                .select_related('patient', 'time_slot')
+                .filter(time_slot=slot).first())
+        data['appointment'] = AppointmentSerializer(appt).data if appt else None
+        return Response(data)
+
+    def patch(self, request, id):
+        if not self._admin(request):
+            return Response({'detail': 'Forbidden.'}, status=status.HTTP_403_FORBIDDEN)
+        slot = get_object_or_404(TimeSlot, id=id)
+        if slot.booked:
+            return Response({'detail': 'Cannot change a slot that is already booked.'},
+                            status=status.HTTP_400_BAD_REQUEST)
+        if 'is_available' in request.data:
+            slot.is_available = bool(request.data['is_available'])
+            slot.save(update_fields=['is_available'])
+        return Response(TimeSlotSerializer(slot).data)
+
+class GenerateTimeSlotsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        if not request.user.groups.filter(name='Admin').exists():
+            return Response({'detail': 'Forbidden.'}, status=status.HTTP_403_FORBIDDEN)
+        out = StringIO()
+        call_command('generate_timeslots', stdout=out)
+        return Response({'detail': out.getvalue().strip()})
 
 class AppointmentListCreateView(APIView):
     permission_classes = [IsAuthenticated]
@@ -407,7 +457,7 @@ class AppointmentListCreateView(APIView):
         if patient.account != request.user and not request.user.groups.filter(name='Admin').exists():
             return Response({'detail': 'Forbidden.'}, status=status.HTTP_403_FORBIDDEN)
 
-        if time_slot.booked or Appointment.objects.filter(time_slot=time_slot).exists():
+        if time_slot.booked or not time_slot.is_available or Appointment.objects.filter(time_slot=time_slot).exists():
             return Response({'detail': 'This time slot is no longer available.'},
                             status=status.HTTP_409_CONFLICT)
 

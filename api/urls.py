@@ -27,4 +27,7 @@ urlpatterns = [
     path('users/', views.AdminUserListView.as_view()),
     path('users/<int:id>/', views.AdminUserDetailView.as_view()),
     path('users/<int:id>/patients/', views.AdminUserPatientsView.as_view()),
+    path('timeslots/', views.TimeSlotListView.as_view()),
+    path('timeslots/generate/', views.GenerateTimeSlotsView.as_view()),
+    path('timeslots/<int:id>/', views.TimeSlotDetailView.as_view()),
 ]
