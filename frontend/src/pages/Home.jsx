@@ -55,7 +55,6 @@ const FEATURES = [
 ];
 
 function dashboardPath(group) {
-    if (group === "Doctor") return "/doctor-dashboard";
-    if (group === "Admin")  return "/admin-dashboard";
-    return "/user-dashboard";
+    if (group === "Doctor") return "/dashboard/doctor";
+    return "/dashboard/user";
 }

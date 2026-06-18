@@ -5,9 +5,8 @@ import {useAuth} from "../context/useAuth.js";
 
 function dashboardPath(group) {
     switch (group) {
-        case "Doctor": return "/doctor-dashboard";
-        case "Admin":  return "/admin-dashboard";
-        default:       return "/user-dashboard";
+        case "Doctor": return "/dashboard/doctor";
+        default:       return "/dashboard/user";
     }
 }
 

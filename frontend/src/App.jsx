@@ -41,8 +41,8 @@ function AppContent() {
             />
             <Routes>
                 <Route path="/" element={<Home/>}/>
-                <Route path="/user-dashboard" element={<UserDashboard/>}/>
-                <Route path="/doctor-dashboard" element={<DoctorDashboard/>}/>
+                <Route path="/dashboard/user" element={<UserDashboard/>}/>
+                <Route path="/dashboard/doctor" element={<DoctorDashboard/>}/>
                 {/*<Route path="/admin-dashboard"  element={<AdminDashboard/>}/>*/}
                 <Route path="/login" element={<Login/>}/>
                 <Route path="/booking" element={<NewAppointment/>}/>
@@ -52,9 +52,7 @@ function AppContent() {
                 <Route path="/profile/:id" element={<Profile/>}/>
                 <Route path="/calendar" element={<Calendar/>}/>
                 <Route path="/booking/confirm" element={<BookingConfirm/>}/>
-                <Route path="/doctor-dashboard" element={<DoctorDashboard/>}/>
                 <Route path="/register" element={<Register/>}/>
-                <Route path="/admin-doctor" element={<AdminDoctor/>}/>
                 <Route path="/admin/doctor" element={<AdminDoctor/>}/>
                 <Route path="/admin/users" element={<AdminUser/>}/>
             </Routes>
