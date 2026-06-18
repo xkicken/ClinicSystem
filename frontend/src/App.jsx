@@ -11,6 +11,7 @@ import Profile from "./pages/Profile";
 import Calendar from "./pages/Calendar";
 import BookingConfirm from "./pages/BookingConfirm"
 import DoctorDashboard from "./pages/DoctorDashboard";
+import Register from "./pages/Register";
 
 function App() {
     return (
@@ -48,6 +49,7 @@ function AppContent() {
                 <Route path="/calendar" element={<Calendar/>}/>
                 <Route path="/booking/confirm" element={<BookingConfirm/>}/>
                 <Route path="/doctor-dashboard" element={<DoctorDashboard/>}/>
+                <Route path="/register" element={<Register/>}/>
             </Routes>
         </>
     );
