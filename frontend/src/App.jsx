@@ -12,6 +12,7 @@ import Calendar from "./pages/Calendar";
 import BookingConfirm from "./pages/BookingConfirm"
 import DoctorDashboard from "./pages/DoctorDashboard";
 import Register from "./pages/Register";
+import Home from "./pages/Home";
 
 function App() {
     return (
@@ -37,6 +38,7 @@ function AppContent() {
                 onLogout={logout}
             />
             <Routes>
+                <Route path="/" element={<Home/>}/>
                 <Route path="/user-dashboard" element={<UserDashboard/>}/>
                 <Route path="/doctor-dashboard" element={<DoctorDashboard/>}/>
                 {/*<Route path="/admin-dashboard"  element={<AdminDashboard/>}/>*/}
@@ -50,6 +52,7 @@ function AppContent() {
                 <Route path="/booking/confirm" element={<BookingConfirm/>}/>
                 <Route path="/doctor-dashboard" element={<DoctorDashboard/>}/>
                 <Route path="/register" element={<Register/>}/>
+
             </Routes>
         </>
     );
