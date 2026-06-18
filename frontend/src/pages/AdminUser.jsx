@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import {useEffect, useState} from "react";
+import {Link} from "react-router-dom";
 import api from "../services/axiosAPI";
 
 const EMPTY_PATIENT = {
@@ -13,10 +13,10 @@ export default function AdminUsers() {
     const [error, setError] = useState("");
 
     const [editingId, setEditingId] = useState(null);
-    const [editForm, setEditForm] = useState({ username: "", first_name: "", last_name: "", email: "" });
+    const [editForm, setEditForm] = useState({username: "", first_name: "", last_name: "", email: ""});
 
     const [addingUser, setAddingUser] = useState(false);
-    const [newUser, setNewUser] = useState({ username: "", first_name: "", last_name: "", email: "", password: "" });
+    const [newUser, setNewUser] = useState({username: "", first_name: "", last_name: "", email: "", password: ""});
 
     const [addPatientFor, setAddPatientFor] = useState(null);
     const [newPatient, setNewPatient] = useState(EMPTY_PATIENT);
@@ -35,7 +35,7 @@ export default function AdminUsers() {
         try {
             await api.post("/users/", newUser);
             setAddingUser(false);
-            setNewUser({ username: "", first_name: "", last_name: "", email: "", password: "" });
+            setNewUser({username: "", first_name: "", last_name: "", email: "", password: ""});
             load();
         } catch (err) {
             setError(fmt(err.response?.data) || "Could not create user.");
@@ -56,30 +56,53 @@ export default function AdminUsers() {
 
     function startEdit(u) {
         setEditingId(u.user.id);
-        setEditForm({ username: u.user.username, first_name: u.user.first_name,
-            last_name: u.user.last_name, email: u.user.email });
+        setEditForm({
+            username: u.user.username, first_name: u.user.first_name,
+            last_name: u.user.last_name, email: u.user.email
+        });
         setError("");
     }
+
     async function saveEdit() {
-        try { await api.patch(`/users/${editingId}/`, editForm); setEditingId(null); load(); }
-        catch (err) { setError(err.response?.data?.detail || "Could not save changes."); }
-    }
-    async function toggleActive(u) {
-        try { await api.patch(`/users/${u.user.id}/`, { is_active: !u.is_active }); load(); }
-        catch (err) { setError(err.response?.data?.detail || "Could not update user."); }
-    }
-    async function deleteUser(u) {
-        if (!window.confirm(`Delete ${u.user.username}? This removes their patients too.`)) return;
-        try { await api.delete(`/users/${u.user.id}/`); load(); }
-        catch (err) { setError(err.response?.data?.detail || "Could not delete user."); }
-    }
-    async function deletePatient(pid) {
-        if (!window.confirm("Delete this patient?")) return;
-        try { await api.delete(`/patients/${pid}/`); load(); }
-        catch { setError("Could not delete patient."); }
+        try {
+            await api.patch(`/users/${editingId}/`, editForm);
+            setEditingId(null);
+            load();
+        } catch (err) {
+            setError(err.response?.data?.detail || "Could not save changes.");
+        }
     }
 
-    const set = (setter) => (e) => setter(prev => ({ ...prev, [e.target.name]: e.target.value }));
+    async function toggleActive(u) {
+        try {
+            await api.patch(`/users/${u.user.id}/`, {is_active: !u.is_active});
+            load();
+        } catch (err) {
+            setError(err.response?.data?.detail || "Could not update user.");
+        }
+    }
+
+    async function deleteUser(u) {
+        if (!window.confirm(`Delete ${u.user.username}? This removes their patients too.`)) return;
+        try {
+            await api.delete(`/users/${u.user.id}/`);
+            load();
+        } catch (err) {
+            setError(err.response?.data?.detail || "Could not delete user.");
+        }
+    }
+
+    async function deletePatient(pid) {
+        if (!window.confirm("Delete this patient?")) return;
+        try {
+            await api.delete(`/patients/${pid}/`);
+            load();
+        } catch {
+            setError("Could not delete patient.");
+        }
+    }
+
+    const set = (setter) => (e) => setter(prev => ({...prev, [e.target.name]: e.target.value}));
 
     if (loading) return <p className="text-center mt-4">Loading…</p>;
 
@@ -101,17 +124,26 @@ export default function AdminUsers() {
                     <h6 className="mb-3">New User</h6>
                     <div className="row g-2">
                         <div className="col-md-4"><input className="form-control form-control-sm" name="username"
-                            placeholder="Username" value={newUser.username} onChange={set(setNewUser)} required/></div>
+                                                         placeholder="Username" value={newUser.username}
+                                                         onChange={set(setNewUser)} required/></div>
                         <div className="col-md-4"><input className="form-control form-control-sm" name="first_name"
-                            placeholder="First name" value={newUser.first_name} onChange={set(setNewUser)} required/></div>
+                                                         placeholder="First name" value={newUser.first_name}
+                                                         onChange={set(setNewUser)} required/></div>
                         <div className="col-md-4"><input className="form-control form-control-sm" name="last_name"
-                            placeholder="Last name" value={newUser.last_name} onChange={set(setNewUser)} required/></div>
-                        <div className="col-md-6"><input type="email" className="form-control form-control-sm" name="email"
-                            placeholder="Email" value={newUser.email} onChange={set(setNewUser)}/></div>
-                        <div className="col-md-6"><input type="password" className="form-control form-control-sm" name="password"
-                            placeholder="Password" value={newUser.password} onChange={set(setNewUser)} required/></div>
+                                                         placeholder="Last name" value={newUser.last_name}
+                                                         onChange={set(setNewUser)} required/></div>
+                        <div className="col-md-6"><input type="email" className="form-control form-control-sm"
+                                                         name="email"
+                                                         placeholder="Email" value={newUser.email}
+                                                         onChange={set(setNewUser)}/></div>
+                        <div className="col-md-6"><input type="password" className="form-control form-control-sm"
+                                                         name="password"
+                                                         placeholder="Password" value={newUser.password}
+                                                         onChange={set(setNewUser)} required/></div>
                     </div>
-                    <div className="mt-2"><button className="btn btn-sm btn-primary">Create user</button></div>
+                    <div className="mt-2">
+                        <button className="btn btn-sm btn-primary">Create user</button>
+                    </div>
                 </form>
             )}
 
@@ -129,10 +161,13 @@ export default function AdminUsers() {
                                 {!u.is_active && <span className="badge bg-secondary ms-2">Inactive</span>}
                             </div>
                             <div className="d-flex gap-2">
-                                <button className="btn btn-sm btn-outline-secondary" onClick={() => startEdit(u)}>Edit</button>
-                                <button className={`btn btn-sm ${u.is_active ? "btn-outline-warning" : "btn-outline-success"}`}
-                                        onClick={() => toggleActive(u)}>{u.is_active ? "Deactivate" : "Activate"}</button>
-                                <button className="btn btn-sm btn-outline-danger" onClick={() => deleteUser(u)}>Delete</button>
+                                <button className="btn btn-sm btn-outline-secondary" onClick={() => startEdit(u)}>Edit
+                                </button>
+                                <button
+                                    className={`btn btn-sm ${u.is_active ? "btn-outline-warning" : "btn-outline-success"}`}
+                                    onClick={() => toggleActive(u)}>{u.is_active ? "Deactivate" : "Activate"}</button>
+                                <button className="btn btn-sm btn-outline-danger" onClick={() => deleteUser(u)}>Delete
+                                </button>
                             </div>
                         </div>
                         <div className="card-body">
@@ -152,7 +187,9 @@ export default function AdminUsers() {
                                                value={editForm.last_name} onChange={set(setEditForm)}/></div>
                                     <div className="col-12 d-flex gap-2 mt-2">
                                         <button className="btn btn-sm btn-primary" onClick={saveEdit}>Save</button>
-                                        <button className="btn btn-sm btn-outline-secondary" onClick={() => setEditingId(null)}>Cancel</button>
+                                        <button className="btn btn-sm btn-outline-secondary"
+                                                onClick={() => setEditingId(null)}>Cancel
+                                        </button>
                                     </div>
                                 </div>
                             ) : (
@@ -162,7 +199,10 @@ export default function AdminUsers() {
                             <div className="d-flex justify-content-between align-items-center mb-2">
                                 <h6 className="mb-0">Patients ({u.patients.length})</h6>
                                 <button className="btn btn-sm btn-outline-success"
-                                        onClick={() => { setAddPatientFor(addingP ? null : u.user.id); setNewPatient(EMPTY_PATIENT); }}>
+                                        onClick={() => {
+                                            setAddPatientFor(addingP ? null : u.user.id);
+                                            setNewPatient(EMPTY_PATIENT);
+                                        }}>
                                     {addingP ? "Cancel" : "+ Add patient"}
                                 </button>
                             </div>
@@ -170,16 +210,29 @@ export default function AdminUsers() {
                             {addingP && (
                                 <form className="border rounded p-2 mb-3" onSubmit={createPatient}>
                                     <div className="row g-2">
-                                        <div className="col-md-6"><input className="form-control form-control-sm" name="first_name"
-                                            placeholder="First name" value={newPatient.first_name} onChange={set(setNewPatient)} required/></div>
-                                        <div className="col-md-6"><input className="form-control form-control-sm" name="last_name"
-                                            placeholder="Last name" value={newPatient.last_name} onChange={set(setNewPatient)} required/></div>
-                                        <div className="col-md-6"><input className="form-control form-control-sm" name="phone"
-                                            placeholder="Phone" value={newPatient.phone} onChange={set(setNewPatient)} required/></div>
-                                        <div className="col-md-6"><input type="date" className="form-control form-control-sm" name="date_of_birth"
-                                            value={newPatient.date_of_birth} onChange={set(setNewPatient)} required/></div>
-                                        <div className="col-12"><input className="form-control form-control-sm" name="address"
-                                            placeholder="Address" value={newPatient.address} onChange={set(setNewPatient)} required/></div>
+                                        <div className="col-md-6"><input className="form-control form-control-sm"
+                                                                         name="first_name"
+                                                                         placeholder="First name"
+                                                                         value={newPatient.first_name}
+                                                                         onChange={set(setNewPatient)} required/></div>
+                                        <div className="col-md-6"><input className="form-control form-control-sm"
+                                                                         name="last_name"
+                                                                         placeholder="Last name"
+                                                                         value={newPatient.last_name}
+                                                                         onChange={set(setNewPatient)} required/></div>
+                                        <div className="col-md-6"><input className="form-control form-control-sm"
+                                                                         name="phone"
+                                                                         placeholder="Phone" value={newPatient.phone}
+                                                                         onChange={set(setNewPatient)} required/></div>
+                                        <div className="col-md-6"><input type="date"
+                                                                         className="form-control form-control-sm"
+                                                                         name="date_of_birth"
+                                                                         value={newPatient.date_of_birth}
+                                                                         onChange={set(setNewPatient)} required/></div>
+                                        <div className="col-12"><input className="form-control form-control-sm"
+                                                                       name="address"
+                                                                       placeholder="Address" value={newPatient.address}
+                                                                       onChange={set(setNewPatient)} required/></div>
                                         <div className="col-md-6">
                                             <select className="form-select form-select-sm" name="gender"
                                                     value={newPatient.gender} onChange={set(setNewPatient)} required>
@@ -189,12 +242,20 @@ export default function AdminUsers() {
                                                 <option value="OTHER">Other</option>
                                             </select>
                                         </div>
-                                        <div className="col-md-6"><input className="form-control form-control-sm" name="emergency_contact"
-                                            placeholder="Emergency contact" value={newPatient.emergency_contact} onChange={set(setNewPatient)} required/></div>
-                                        <div className="col-md-6"><input className="form-control form-control-sm" name="emergency_contact_phone"
-                                            placeholder="Emergency phone" value={newPatient.emergency_contact_phone} onChange={set(setNewPatient)} required/></div>
+                                        <div className="col-md-6"><input className="form-control form-control-sm"
+                                                                         name="emergency_contact"
+                                                                         placeholder="Emergency contact"
+                                                                         value={newPatient.emergency_contact}
+                                                                         onChange={set(setNewPatient)} required/></div>
+                                        <div className="col-md-6"><input className="form-control form-control-sm"
+                                                                         name="emergency_contact_phone"
+                                                                         placeholder="Emergency phone"
+                                                                         value={newPatient.emergency_contact_phone}
+                                                                         onChange={set(setNewPatient)} required/></div>
                                     </div>
-                                    <div className="mt-2"><button className="btn btn-sm btn-primary">Add patient</button></div>
+                                    <div className="mt-2">
+                                        <button className="btn btn-sm btn-primary">Add patient</button>
+                                    </div>
                                 </form>
                             )}
 
@@ -203,11 +264,14 @@ export default function AdminUsers() {
                             ) : (
                                 <ul className="list-group">
                                     {u.patients.map(p => (
-                                        <li key={p.id} className="list-group-item d-flex justify-content-between align-items-center">
+                                        <li key={p.id}
+                                            className="list-group-item d-flex justify-content-between align-items-center">
                                             <span>{p.first_name} {p.last_name} · {p.phone}</span>
                                             <span className="d-flex gap-2">
-                                                <Link to={`/patient/${p.id}`} className="btn btn-sm btn-outline-secondary">Edit</Link>
-                                                <button className="btn btn-sm btn-outline-danger" onClick={() => deletePatient(p.id)}>Delete</button>
+                                                <Link to={`/patient/${p.id}`}
+                                                      className="btn btn-sm btn-outline-secondary">Edit</Link>
+                                                <button className="btn btn-sm btn-outline-danger"
+                                                        onClick={() => deletePatient(p.id)}>Delete</button>
                                             </span>
                                         </li>
                                     ))}

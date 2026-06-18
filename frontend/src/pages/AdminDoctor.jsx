@@ -30,7 +30,6 @@ export default function AdminDoctors() {
             <div className="d-flex justify-content-between align-items-center mb-4">
                 <h3 className="fw-bold mb-0">Doctor Management</h3>
                 <div className="d-flex gap-2">
-                    <Link to="/admin/users" className="btn btn-outline-primary btn-sm">← Manage Users</Link>
                     <Link to="/add-doctor" className="btn btn-success btn-sm">+ Add Doctor</Link>
                 </div>
             </div>
