@@ -26,7 +26,7 @@ const getNavLinks = (id) => ({
   ],
 });
 
-function Navbar({ id, group, firstName, lastName, isAuthenticated, onLogout }) {
+function NavBar({ id, group, firstName, lastName, isAuthenticated, onLogout }) {
   const links = getNavLinks(id)[group] || getNavLinks(id).guest;
 
   return (
@@ -80,4 +80,4 @@ function Navbar({ id, group, firstName, lastName, isAuthenticated, onLogout }) {
   );
 }
 
-export default Navbar;
+export default NavBar;

@@ -1,7 +1,7 @@
 import {BrowserRouter, Routes, Route} from "react-router-dom";
 import {AuthProvider} from "./context/AuthContext.jsx";
 import {useAuth} from "./context/useAuth.js";
-import Navbar from "./component/Navbar";
+import NavBar from "./component/NavBar.jsx";
 import Login from "./pages/Login";
 import UserDashboard from "./pages/UserDashboard";
 import NewAppointment from "./pages/NewAppointment";
@@ -27,7 +27,7 @@ function AppContent() {
 
     return (
         <>
-            <Navbar
+            <NavBar
                 group={user?.group || "guest"}
                 id={user?.id}
                 firstName={user?.firstName}
