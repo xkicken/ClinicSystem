@@ -20,9 +20,7 @@ const getNavLinks = (id) => ({
   Admin: [
     { to: "/", label: "Home" },
     { to: `/profile/${id}`, label: "Profile" },
-    { to: "/admin-dashboard", label: "Dashboard" },
-    { to: "/calendar", label: "Calendar" },
-
+    { to:"admin-doctor", label: "Doctor"},
   ],
 });
 

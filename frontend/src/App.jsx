@@ -13,6 +13,7 @@ import BookingConfirm from "./pages/BookingConfirm"
 import DoctorDashboard from "./pages/DoctorDashboard";
 import Register from "./pages/Register";
 import Home from "./pages/Home";
+import AdminDoctor from "./pages/AdminDoctor";
 
 function App() {
     return (
@@ -52,7 +53,7 @@ function AppContent() {
                 <Route path="/booking/confirm" element={<BookingConfirm/>}/>
                 <Route path="/doctor-dashboard" element={<DoctorDashboard/>}/>
                 <Route path="/register" element={<Register/>}/>
-
+                <Route path="/admin-doctor" element={<AdminDoctor/>}/>
             </Routes>
         </>
     );
