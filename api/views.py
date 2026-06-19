@@ -137,9 +137,7 @@ class AdminAddDoctorView(APIView):
         }
         user_serializer = RegisterSerializer(data=user_data)
         if not user_serializer.is_valid():
-            return Response({
-                user_serializer.errors
-            }, status=status.HTTP_400_BAD_REQUEST)
+            return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         user = user_serializer.save()
         doctor_group, _ = Group.objects.get_or_create(name='Doctor')
@@ -151,9 +149,7 @@ class AdminAddDoctorView(APIView):
         })
         if not doctor_serializer.is_valid():
             user.delete()
-            return Response({
-                doctor_serializer.errors
-            }, status=status.HTTP_400_BAD_REQUEST)
+            return Response(doctor_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         doctor_serializer.save(account=user)
         return Response({

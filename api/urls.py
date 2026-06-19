@@ -30,4 +30,5 @@ urlpatterns = [
     path('timeslots/', views.TimeSlotListView.as_view()),
     path('timeslots/generate/', views.GenerateTimeSlotsView.as_view()),
     path('timeslots/<int:id>/', views.TimeSlotDetailView.as_view()),
+    path('specialties/', views.SpecialtyListView.as_view()),
 ]
