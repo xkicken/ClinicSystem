@@ -31,7 +31,7 @@ LOGIN_REDIRECT_URL = '/home/'
 LOGOUT_REDIRECT_URL = '/home/'
 FORCE_SCRIPT_NAME = "/django"
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'True').lower() == 'true'
 
 ALLOWED_HOSTS = ["clinic.antonylin.dev"]
 CSRF_TRUSTED_ORIGINS = ["https://clinic.antonylin.dev"]
