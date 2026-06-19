@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 let timeSlotId = info.event.extendedProps.time_slot_id;
 
                 window.location.href =
-                    `/django/booking_confirm/?doctor=${doctor}&time_slot=${timeSlotId}&patient=${selected_patient.id}`;
+                    `/booking_confirm/?doctor=${doctor}&time_slot=${timeSlotId}&patient=${selected_patient.id}`;
             };
 
             let modal = new bootstrap.Modal(document.getElementById('eventModal'));

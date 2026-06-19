@@ -60,7 +60,7 @@
                         Cancel
                     </button>
 
-                    <form method="post" action="{% url 'django/delete_doctor' account.id %}">
+                    <form method="post" action="{% url 'delete_doctor' account.id %}">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-danger">
                             Yes, Delete
