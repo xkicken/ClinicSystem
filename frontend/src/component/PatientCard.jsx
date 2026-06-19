@@ -27,7 +27,7 @@ export default function PatientCard({patient}) {
                     <div className="text-muted small">
                         Next appointment:
                         <p className={"mb-0"}>
-                            Dr. {next.time_slot.doctor_name} — {next.time_slot.date} at {next.time_slot.start_time} <Link to={`/appointment/${next.id}`} className="btn btn-info btn-xs mb-1 rounded-pill">View</Link>
+                            Dr. {next.time_slot.doctor_name} — {next.time_slot.date} at {next.time_slot.start_time} <Link to={`/appointment/${next.id}`} className="btn btn-info btn-xs mb-1">View</Link>
                         </p>
                     </div>
 
@@ -40,8 +40,8 @@ export default function PatientCard({patient}) {
             </div>
             <div>
                 <div className="d-flex gap-2">
-                    <Link to={`/booking?patient=${patient.id}`} className="btn btn-outline-primary btn-sm rounded-pill">Book</Link>
-                    <Link to={`/patient/${patient.id}`} className="btn btn-primary btn-sm rounded-pill">Patient Details</Link>
+                    <Link to={`/booking?patient=${patient.id}`} className="btn btn-outline-primary btn-sm">Book</Link>
+                    <Link to={`/patient/${patient.id}`} className="btn btn-primary btn-sm">Patient Details</Link>
                 </div>
             </div>
         </div>
