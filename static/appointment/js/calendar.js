@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function () {
         eventClick: function (info) {
             const eventId = info.event.id;
 
-            window.location.href = `/booking/view/${eventId}/`;
+            window.location.href = `/django/booking/view/${eventId}/`;
         },
         events: appointment
     });

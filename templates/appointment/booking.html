@@ -18,7 +18,7 @@
 
             {% for doctor in doctors %}
 
-                <a href="{% url 'booking' %}?doctor={{ doctor.id }}&patient={{ selected_patient.id }}"
+                <a href="{% url 'django/booking' %}?doctor={{ doctor.id }}&patient={{ selected_patient.id }}"
                    class="text-decoration-none">
 
                     <div class="card mb-3 border-0 shadow-sm
