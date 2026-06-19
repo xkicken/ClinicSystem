@@ -29,6 +29,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-wk46ewdzn7_k(-@^mimepvl91#hc+f5nlmon84du5s615$2f-a'
 LOGIN_REDIRECT_URL = '/home/'
 LOGOUT_REDIRECT_URL = '/home/'
+FORCE_SCRIPT_NAME = "/django"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
