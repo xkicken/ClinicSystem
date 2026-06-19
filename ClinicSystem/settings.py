@@ -32,7 +32,10 @@ LOGOUT_REDIRECT_URL = '/home/'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["clinic.antonylin.dev"]
+CSRF_TRUSTED_ORIGINS = ["https://clinic.antonylin.dev"]
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+USE_X_FORWARDED_HOST = True
 
 # Application definition
 

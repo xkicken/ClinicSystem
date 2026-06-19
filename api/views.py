@@ -14,7 +14,7 @@ from io import StringIO
 
 from .serializers import *
 
-COOKIE_SECURE = False
+COOKIE_SECURE = True
 COOKIE_SAMESITE = "Lax"
 
 class RegisterView(APIView):
