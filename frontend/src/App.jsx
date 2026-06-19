@@ -19,6 +19,7 @@ import {useNavigate} from "react-router-dom";
 import ProtectedRoute from "./component/ProtectedRoute.jsx";
 import AdminTimeSlots from "./pages/AdminTimeSlots";
 import AddDoctor from "./pages/AddDoctor";
+import AdminSpecialties from "./pages/AdminSpecialties";
 
 function App() {
     return (
@@ -76,6 +77,7 @@ function AppContent() {
                     <Route path="/admin/users" element={<AdminUser/>}/>
                     <Route path="/admin/timeslots" element={<AdminTimeSlots/>}/>
                     <Route path="/add-doctor" element={<AddDoctor/>}/>
+                    <Route path="/admin/specialties" element={<AdminSpecialties/>}/>
                 </Route>
 
             </Routes>

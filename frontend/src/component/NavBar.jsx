@@ -21,6 +21,7 @@ const getNavLinks = (id) => ({
         {to: "/", label: "Home"},
         {to: `/profile/${id}`, label: "Profile"},
         {to: "/admin/doctor", label: "Doctor"},
+        {to: "/admin/specialties", label: "Specialties"},
         {to: "/admin/users", label: "Users"},
         {to: "/admin/timeslots", label: "Timeslots"}
     ],

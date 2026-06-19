@@ -104,9 +104,42 @@ class SpecialtyListView(APIView):
 
     def get(self, request):
         specialties = Specialty.objects.all()
-        return Response(
-            SpecialtySerializer(specialties, many=True).data
-        )
+        return Response(SpecialtySerializer(specialties, many=True).data)
+
+    def post(self, request):
+        if not request.user.is_authenticated or not request.user.groups.filter(name='Admin').exists():
+            return Response({'detail': 'Forbidden.'}, status=status.HTTP_403_FORBIDDEN)
+        serializer = SpecialtySerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+class SpecialtyDetailView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def _admin(self, request):
+        return request.user.groups.filter(name='Admin').exists()
+
+    def patch(self, request, id):
+        if not self._admin(request):
+            return Response({'detail': 'Forbidden.'}, status=status.HTTP_403_FORBIDDEN)
+        specialty = get_object_or_404(Specialty, id=id)
+        serializer = SpecialtySerializer(specialty, data=request.data, partial=True)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer.save()
+        return Response(serializer.data)
+
+    def delete(self, request, id):
+        if not self._admin(request):
+            return Response({'detail': 'Forbidden.'}, status=status.HTTP_403_FORBIDDEN)
+        specialty = get_object_or_404(Specialty, id=id)
+        if Doctor.objects.filter(specialty=specialty).exists():
+            return Response({'detail': 'Cannot delete: doctors are assigned to this specialty.'},
+                            status=status.HTTP_400_BAD_REQUEST)
+        specialty.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class DoctorListView(APIView):
