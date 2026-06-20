@@ -37,7 +37,7 @@ function AppContent() {
 
     async function handleLogout() {
         await logout();
-        navigate("/home");
+        navigate("/");
     }
 
     return (
